@@ -39,6 +39,24 @@ Constructor and field readers
     point.x = 5
     # CannotBeChangeException: You cannot change values from a Value Object, create a new one
 
+    class Date(ValueObject):
+        def __init__(self, day, month, year):
+            pass
+
+    date = Date(1, 10, 2015)
+
+    date.day
+    # 1
+
+    date.month
+    # 10
+
+    date.year
+    # 2015
+
+    date.month = 5
+    # CannotBeChangeException: You cannot change values from a Value Object, create a new one
+
 
 Equality based on field values
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
