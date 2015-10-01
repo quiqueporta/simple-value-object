@@ -17,4 +17,4 @@ Value Object
 .. |License GPL| image:: http://img.shields.io/badge/license-GPLv3-blue.svg
     :target: https://github.com/quiqueporta/value-object/blob/master/LICENSE
 
-.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5-yellowgreen.svg

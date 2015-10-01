@@ -1,5 +1,8 @@
 class NotDeclaredArgsException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(NotDeclaredArgsException, self).__init__(
+            'No arguments declared in __init__'
+        )
 
 
 class ArgWithoutValueException(Exception):
@@ -7,7 +10,10 @@ class ArgWithoutValueException(Exception):
 
 
 class CannotBeChangeException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(CannotBeChangeException, self).__init__(
+            'You cannot change values from a Value Object, create a new one'
+        )
 
 
 class ViolatedInvariantException(Exception):
@@ -20,9 +26,13 @@ class NotImplementedInvariant(Exception):
 
 class InvariantsNotTupleException(Exception):
     def __init__(self, *args, **kwargs):
-        super(InvariantsNotTupleException, self).__init__('Invariants is not a valid tuple.')
+        super(InvariantsNotTupleException, self).__init__(
+            'Invariants is not a valid tuple.'
+        )
 
 
 class InvariantReturnValueException(Exception):
     def __init__(self, *args, **kwargs):
-        super(InvariantReturnValueException, self).__init__('Invariants must return a boolean value')
+        super(InvariantReturnValueException, self).__init__(
+            'Invariants must return a boolean value'
+        )
