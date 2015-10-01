@@ -1,4 +1,4 @@
 [run]
-source = ./value_object/
-omit = ./value_object/__init__.py
+source = ./simple_value_object/
+omit = ./simple_value_object/__init__.py
 branch = True

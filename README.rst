@@ -14,7 +14,7 @@ Constructor and field readers
 
 .. code-block:: python
 
-    from value_object import ValueObject
+    from simple_value_object import ValueObject
 
     class Point(ValueObject):
         def __init__(self, x, y):
@@ -37,7 +37,7 @@ Equality based on field values
 
 .. code-block:: python
 
-    from value_object import ValueObject
+    from simple_value_object import ValueObject
 
     class Point(ValueObject):
         def __init__(self, x, y):
@@ -61,7 +61,7 @@ Hash code based on field values
 
 .. code-block:: python
 
-    from value_object import ValueObject
+    from simple_value_object import ValueObject
 
     class Point(ValueObject):
         def __init__(self, x, y):
@@ -85,7 +85,7 @@ Invariants
 
 .. code-block:: python
 
-    from value_object import ValueObject
+    from simple_value_object import ValueObject
 
     class Point(ValueObject):
 

@@ -1,10 +1,10 @@
 from setuptools import setup
 
-from value_object import get_version
+from simple_value_object import get_version
 
 
 setup(
-    name='value-object',
+    name='simple-value-object',
     version=get_version(),
     license='GPLv3',
     author='Quique Porta',
@@ -12,9 +12,9 @@ setup(
     description='A simple mixin for create Value Objects',
     long_description=open('README.rst').read(),
     url='https://github.com/quiqueporta/value-object',
-    download_url='https://github.com/quiqueporta/value-object/releases',
+    download_url='https://github.com/quiqueporta/simple-value-object/releases',
     keywords=['python', 'ddd'],
-    packages=['value_object'],
+    packages=['simple_value_object'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

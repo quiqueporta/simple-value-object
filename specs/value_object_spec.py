@@ -1,7 +1,7 @@
 from expects import *
 
-from value_object import ValueObject
-from value_object.exceptions import NotDeclaredArgsException, ArgWithoutValueException, CannotBeChangeException, \
+from simple_value_object import ValueObject
+from simple_value_object.exceptions import NotDeclaredArgsException, ArgWithoutValueException, CannotBeChangeException, \
     ViolatedInvariantException, NotImplementedInvariant, InvariantsNotTupleException, InvariantReturnValueException
 
 
