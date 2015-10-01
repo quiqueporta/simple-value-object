@@ -16,7 +16,7 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - PYTHONPATH=$PYTHONPATH:. mamba
+    - PYTHONPATH=$PYTHONPATH:. mamba --enable-coverage
 
 after_success:
   coveralls
