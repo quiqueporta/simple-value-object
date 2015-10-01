@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - "3.4"
+  - "3.3"
+  - "2.7"
+
+branches:
+  only:
+    - master
+
+# command to install requirements
+install:
+  - pip install -r requirements-test.txt
+  - python setup.py -q develop
+
+# command to run tests, e.g. python setup.py test
+script:
+  - PYTHONPATH=$PYTHONPATH:. mamba
+
+after_success:
+  coveralls
