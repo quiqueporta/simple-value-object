@@ -111,6 +111,16 @@ Invariants
     Point(1,3)
     #<__main__.Point at 0x7f2bd043c780>
 
+
+Test
+----
+
+.. code-block:: sh
+
+    > pip install -r requirements-test.txt
+    > PYTHONPATH=$PYTHONPATH:. mamba
+
+
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/value-object
 
