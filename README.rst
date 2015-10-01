@@ -1,7 +1,7 @@
 Value Object
 ============
 
-|Build Status| |Coverage Status| |Requirements Status| |Python Version| |License GPL|
+|Build Status| |Coverage Status| |Requirements Status| |Python Version| |License MIT|
 
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/value-object.svg?branch=master
@@ -14,7 +14,7 @@ Value Object
      :target: https://requires.io/github/quiqueporta/value-object/requirements/?branch=master
           :alt: Requirements Status
 
-.. |License GPL| image:: http://img.shields.io/badge/license-GPLv3-blue.svg
-    :target: https://github.com/quiqueporta/value-object/blob/master/LICENSE
+.. |License MIT| image:: https://img.shields.io/badge/license-MIT-red.svg
+    :target: https://opensource.org/licenses/MIT
 
-.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5-yellowgreen.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5-blue.svg
