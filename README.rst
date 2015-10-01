@@ -1,11 +1,12 @@
 Value Object
 ============
 
-|Build Status| |Coverage Status|
+|Build Status|
 
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/value-object
 
-.. |Coverage Status| image:: https://coveralls.io/repos/quiqueporta/value-object/badge.svg?branch=master&service=github
+.. image:: https://coveralls.io/repos/quiqueporta/value-object/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/quiqueporta/value-object?branch=master
+
