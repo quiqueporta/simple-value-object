@@ -121,14 +121,14 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |Build Status| image:: https://travis-ci.org/quiqueporta/value-object.svg?branch=master
-    :target: https://travis-ci.org/quiqueporta/value-object
+.. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
+    :target: https://travis-ci.org/quiqueporta/simple-value-object
 
-.. |Coverage Status| image:: https://coveralls.io/repos/quiqueporta/value-object/badge.svg?branch=master&service=github
-  :target: https://coveralls.io/github/quiqueporta/value-object?branch=master
+.. |Coverage Status| image:: https://coveralls.io/repos/quiqueporta/simple-value-object/badge.svg?branch=master&service=github
+  :target: https://coveralls.io/github/quiqueporta/simple-value-object?branch=master
 
-.. |Requirements Status| image:: https://requires.io/github/quiqueporta/value-object/requirements.svg?branch=master
-     :target: https://requires.io/github/quiqueporta/value-object/requirements/?branch=master
+.. |Requirements Status| image:: https://requires.io/github/quiqueporta/simple-value-object/requirements.svg?branch=master
+     :target: https://requires.io/github/quiqueporta/simple-value-object/requirements/?branch=master
           :alt: Requirements Status
 
 .. |License MIT| image:: https://img.shields.io/badge/license-MIT-red.svg
