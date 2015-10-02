@@ -1,7 +1,7 @@
 Value Object
 ============
 
-|Build Status| |Coverage Status| |Requirements Status| |Python Version| |License MIT|
+|Version Number| |Build Status| |Coverage Status| |Requirements Status| |Python Version| |License MIT|
 
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
@@ -138,6 +138,8 @@ Test
     > pip install -r requirements-test.txt
     > PYTHONPATH=$PYTHONPATH:. mamba
 
+
+.. |License MIT| image:: https://img.shields.io/badge/version-0.1.0-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
