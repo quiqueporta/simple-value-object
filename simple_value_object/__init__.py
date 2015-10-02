@@ -2,7 +2,7 @@
 
 from .value_object import ValueObject
 
-VERSION = (1, 0, 0, 'final')
+VERSION = (0, 1, 0, 'alpha')
 __version__ = VERSION
 
 
