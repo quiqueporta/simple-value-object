@@ -139,7 +139,7 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |License MIT| image:: https://img.shields.io/badge/version-0.1.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-0.1.0-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
