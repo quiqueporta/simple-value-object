@@ -38,9 +38,6 @@ class ValueObject(object):
             )
 
         def check_invariants():
-            # if not isinstance(self.invariants, tuple):
-            #     raise InvariantsNotTupleException()
-
             for invariant in obtain_invariants():
                 if not invariant_execute(invariant):
                     raise ViolatedInvariantException(
