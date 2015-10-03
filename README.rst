@@ -6,6 +6,14 @@ Value Object
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
 
+
+Installation
+------------
+
+.. code-block:: sh
+
+    > pip install simple-value-object
+
 Usage
 -----
 
