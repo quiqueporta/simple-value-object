@@ -1,16 +1,14 @@
 from inspect import getargspec
+import inspect
 
 from .exceptions import NotDeclaredArgsException, ArgWithoutValueException,\
     CannotBeChangeException, ViolatedInvariantException,\
-    NotImplementedInvariant, InvariantsNotTupleException,\
     InvariantReturnValueException
 
 MIN_NUMBER_ARGS = 1
 
 
 class ValueObject(object):
-
-    invariants = ()
 
     def __new__(cls, *args, **kwargs):
         self = super(ValueObject, cls).__new__(cls)
@@ -40,10 +38,10 @@ class ValueObject(object):
             )
 
         def check_invariants():
-            if not isinstance(self.invariants, tuple):
-                raise InvariantsNotTupleException()
+            # if not isinstance(self.invariants, tuple):
+            #     raise InvariantsNotTupleException()
 
-            for invariant in self.invariants:
+            for invariant in obtain_invariants():
                 if not invariant_execute(invariant):
                     raise ViolatedInvariantException(
                         'Args values {} violates invariant: {}'.format(
@@ -63,6 +61,16 @@ class ValueObject(object):
                 raise InvariantReturnValueException()
 
             return return_value
+
+        def obtain_invariants():
+            for member in inspect.getmembers(cls):
+                try:
+                    is_method = hasattr(member[1], '__call__')
+                    is_a_invariant_method = 'invariant_func_wrapper' in inspect.getsourcelines(member[1].__code__)[0][0]
+                    if is_method and is_a_invariant_method:
+                        yield(member[0])
+                except AttributeError:
+                    continue
 
         check_class_are_initialized()
         assign_instance_arguments()

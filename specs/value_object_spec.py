@@ -1,8 +1,8 @@
 from expects import *
 
-from simple_value_object import ValueObject
+from simple_value_object import ValueObject, invariant
 from simple_value_object.exceptions import NotDeclaredArgsException, ArgWithoutValueException, CannotBeChangeException, \
-    ViolatedInvariantException, NotImplementedInvariant, InvariantsNotTupleException, InvariantReturnValueException
+    ViolatedInvariantException, InvariantReturnValueException
 
 
 class Point(ValueObject):
@@ -66,16 +66,14 @@ with description('Value Object'):
         with it('forces declared invariants'):
             class AnotherPoint(ValueObject):
 
-                invariants = ('inside_first_quadrant', 'x_less_than_y')
-
                 def __init__(self, x, y):
                     pass
 
-                @classmethod
+                @invariant
                 def inside_first_quadrant(cls, instance):
                     return instance.x > 0 and instance.y > 0
 
-                @classmethod
+                @invariant
                 def x_less_than_y(cls, instance):
                     return instance.x < instance.y
 
@@ -87,33 +85,13 @@ with description('Value Object'):
                 raise_error(ViolatedInvariantException)
             )
 
-        with it('raises an exception when a declared invariant is not a valid tuple'):
-            class PairOfFloats(ValueObject):
-                invariants = ('floats')
-
-                def __init__(self, x, y):
-                    pass
-
-            expect(lambda: PairOfFloats(5, 2)).to(raise_error(InvariantsNotTupleException))
-
-        with it('raises an exception when a declared invariant has not been implemented'):
-            class PairOfIntegers(ValueObject):
-                invariants = ('integers',)
-
-                def __init__(self, x, y):
-                    pass
-
-            expect(lambda: PairOfIntegers(5, 2)).to(raise_error(NotImplementedInvariant,
-                                                                'Invariant integers needs to be implemented'))
-
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):
             class Date(ValueObject):
-                invariants = ('first_year_quarter',)
 
                 def __init__(self, day, month, year):
                     pass
 
-                @classmethod
+                @invariant
                 def first_year_quarter(cls, instance):
                     return 0
 

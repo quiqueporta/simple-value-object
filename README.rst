@@ -103,20 +103,18 @@ Invariants
 
 .. code-block:: python
 
-    from simple_value_object import ValueObject
+    from simple_value_object import ValueObject, invariant
 
     class Point(ValueObject):
-
-        invariants = ('inside_first_quadrant', 'x_less_than_y')
 
         def __init__(self, x, y):
             pass
 
-        @classmethod
+        @invariant
         def inside_first_quadrant(cls, instance):
             return instance.x > 0 and instance.y > 0
 
-        @classmethod
+        @invariant
         def x_less_than_y(cls, instance):
             return instance.x < instance.y
 
@@ -139,7 +137,7 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-0.1.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-0.2.0-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
