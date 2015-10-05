@@ -18,10 +18,10 @@ setup(
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python',
         'Topic :: Utilities',
     ],
 )
