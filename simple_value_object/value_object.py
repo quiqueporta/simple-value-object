@@ -47,12 +47,7 @@ class ValueObject(object):
                     )
 
         def invariant_execute(invariant):
-            try:
-                return_value = getattr(self, invariant)(self)
-            except AttributeError:
-                raise NotImplementedInvariant(
-                    'Invariant {} needs to be implemented'.format(invariant)
-                )
+            return_value = getattr(self, invariant)(self)
 
             if not isinstance(return_value, bool):
                 raise InvariantReturnValueException()
