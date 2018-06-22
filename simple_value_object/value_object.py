@@ -76,7 +76,7 @@ class ValueObject(object):
                 if type(arg) in mutable_types:
                     raise MutableTypeNotAllowedException("Mutable args are not allowed.")
 
-            for key, value in kwargs.iteritems():
+            for key, value in kwargs.items():
                 if type(value) in mutable_types:
                     raise MutableTypeNotAllowedException("'{}' cannot be a mutable data type.".format(key))
 
