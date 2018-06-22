@@ -1,8 +1,14 @@
 from expects import *
 
 from simple_value_object import ValueObject, invariant
-from simple_value_object.exceptions import NotDeclaredArgsException, ArgWithoutValueException, CannotBeChangeException, \
-    ViolatedInvariantException, InvariantReturnValueException
+from simple_value_object.exceptions import (
+    ArgWithoutValueException,
+    CannotBeChangeException,
+    InvariantReturnValueException,
+    MutableTypeNotAllowedException,
+    NotDeclaredArgsException,
+    ViolatedInvariantException
+)
 
 
 class Point(ValueObject):
@@ -62,6 +68,38 @@ with description('Value Object'):
                 expect(lambda: Point(1)).to(raise_error(TypeError))
                 expect(lambda: Point(1, 2, 3)).to(raise_error(TypeError))
 
+            with it('does not allow mutable data types as kwargs'):
+                class AValueObject(ValueObject):
+
+                    def __init__(self, an_argument):
+                        pass
+
+                expect(lambda: AValueObject(an_argument={'key': 'value'})).to(
+                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
+                )
+                expect(lambda: AValueObject(an_argument=[1, 2, 3])).to(
+                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
+                )
+                expect(lambda: AValueObject(an_argument=set([1, 2, 3]))).to(
+                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
+                )
+
+            with it('does not allow mutable data types as args'):
+                class AValueObject(ValueObject):
+
+                    def __init__(self, an_argument):
+                        pass
+
+                expect(lambda: AValueObject({'key': 'value'})).to(
+                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
+                )
+                expect(lambda: AValueObject([1, 2, 3])).to(
+                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
+                )
+                expect(lambda: AValueObject(set([1, 2, 3]))).to(
+                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
+                )
+
     with context('forcing invariants'):
         with it('forces declared invariants'):
             class AnotherPoint(ValueObject):
@@ -96,3 +134,4 @@ with description('Value Object'):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
+

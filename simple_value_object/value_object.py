@@ -1,9 +1,15 @@
 from inspect import getargspec
 import inspect
 
-from .exceptions import NotDeclaredArgsException, ArgWithoutValueException,\
-    CannotBeChangeException, ViolatedInvariantException,\
-    InvariantReturnValueException
+from .exceptions import (
+    ArgWithoutValueException,
+    CannotBeChangeException,
+    InvariantReturnValueException,
+    MutableTypeNotAllowedException,
+    NotDeclaredArgsException,
+    ViolatedInvariantException
+)
+
 
 MIN_NUMBER_ARGS = 1
 
@@ -64,7 +70,18 @@ class ValueObject(object):
                 except AttributeError:
                     continue
 
+        def check_mutable_data_types():
+            mutable_types = (list, dict, set)
+            for arg in args:
+                if type(arg) in mutable_types:
+                    raise MutableTypeNotAllowedException("Mutable args are not allowed.")
+
+            for key, value in kwargs.iteritems():
+                if type(value) in mutable_types:
+                    raise MutableTypeNotAllowedException("'{}' cannot be a mutable data type.".format(key))
+
         check_class_are_initialized()
+        check_mutable_data_types()
         assign_instance_arguments()
         check_invariants()
 

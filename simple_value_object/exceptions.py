@@ -25,3 +25,7 @@ class InvariantReturnValueException(Exception):
         super(InvariantReturnValueException, self).__init__(
             'Invariants must return a boolean value'
         )
+
+
+class MutableTypeNotAllowedException(Exception):
+    pass

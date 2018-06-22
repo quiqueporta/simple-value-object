@@ -136,6 +136,25 @@ Invariants
     #<__main__.Point at 0x7f2bd043c780>
 
 
+Mutable types not allowed
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from simple_value_object import ValueObject, invariant
+
+    class AValueObject(ValueObject):
+
+        def __init__(self, an_arg):
+            pass
+
+    AValueObject(an_arg={'key': 'value'})
+    #MutableTypeNotAllowedException: 'an_arg' cannot be a mutable data type.
+
+    AValueObject({'key': 'value'})
+    #MutableTypeNotAllowedException: Mutable args are not allowed.
+
+
 Test
 ----
 
