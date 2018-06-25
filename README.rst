@@ -6,6 +6,12 @@ Value Object
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
 
+A **value object** is a small object that represents a simple entity whose equality isn't based on identity:
+i.e. two value objects are equal when they have the same value, not necessarily being the same object.
+
+
+`Wikipedia <http://en.wikipedia.org/wiki/Value_object/>`_.
+
 
 Installation
 ------------
