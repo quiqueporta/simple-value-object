@@ -160,6 +160,23 @@ Mutable types not allowed
     AValueObject({'key': 'value'})
     #MutableTypeNotAllowedException: Mutable args are not allowed.
 
+ValueObject within ValueObject
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    from simple_value_object import ValueObject, invariant
+
+    class Money(ValueObject):
+        def __init__(self, amount, currency):
+            pass
+
+    class Currency(ValueObject):
+        def __init__(self, symbol):
+            pass
+
+    Money(amount=100, currency=Currency(symbol="€"))
+
 
 Test
 ----

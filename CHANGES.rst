@@ -1,6 +1,17 @@
 Changelog
 =========
 
+1.1.0 (2018-09-04)
+------------------
+
+- Fix value objects within value objects.
+- Add value objects representation.
+
+1.0.1 (2018-06-22)
+------------------
+
+- Mutable types are not allowed.
+
 0.2.1 (2015-10-05)
 ------------------
 

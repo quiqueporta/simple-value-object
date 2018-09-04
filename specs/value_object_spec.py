@@ -15,6 +15,17 @@ class Point(ValueObject):
     def __init__(self, x, y):
         pass
 
+
+class Money(ValueObject):
+    def __init__(self, amount, currency):
+        pass
+
+
+class Currency(ValueObject):
+    def __init__(self, symbol):
+        pass
+
+
 with description('Value Object'):
     with context('standard behavior'):
         with it('generates constructor, fields and accessors for declared fields'):
@@ -50,6 +61,29 @@ with description('Value Object'):
                     pass
             a_value_object = MyPoint(5)
             expect(a_value_object.y).to(equal(3))
+
+        with it('can set another Value Object as parameter'):
+            a_money = Money(100, Currency('€'))
+
+            expect(a_money).to(equal(Money(100, Currency('€'))))
+            expect(a_money.currency).to(equal(Currency('€')))
+
+        with it('provides a representation'):
+            class MyPoint(ValueObject):
+                def __init__(self, x, y=3):
+                    pass
+
+            a_value_object = Point(6, 7)
+            a_value_object_with_defaults = MyPoint(6)
+            a_value_object_within_value_object = Money(100, Currency('€'))
+
+            expect(str(a_value_object)).to(equal('Point(x=6, y=7)'))
+            expect(repr(a_value_object)).to(equal('Point(x=6, y=7)'))
+            expect(str(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
+            expect(repr(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
+            expect(str(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
+            expect(repr(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
+
 
     with context('restrictions'):
         with context('on initialization'):
