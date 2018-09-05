@@ -9,6 +9,7 @@ python:
 branches:
   only:
     - master
+    - 0.2.x
 
 # command to install requirements
 install:
