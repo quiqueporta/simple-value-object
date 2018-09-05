@@ -74,10 +74,21 @@ class ValueObject(object):
         raise CannotBeChangeException()
 
     def __eq__(self, other):
+        if other is None:
+            return False
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
         return self.__dict__ != other.__dict__
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        args_spec = ArgsSpec(self.__init__)
+        args_values = ["{}={}".format(arg, getattr(self, arg)) for arg in args_spec.args[1:]]
+
+        return "{}({})".format(self.__class__.__name__, ", ".join(args_values))
 
     @property
     def hash(self):
