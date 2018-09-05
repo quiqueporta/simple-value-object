@@ -62,6 +62,11 @@ with description('Value Object'):
             expect(a_money).to(equal(Money(100, Currency('€'))))
             expect(a_money.currency).to(equal(Currency('€')))
 
+        with it('can compare hash for value objects within value objects'):
+            a_money = Money(100, Currency('€'))
+            another_money = Money(100, Currency('€'))
+            expect(a_money.__hash__()).to(equal(another_money.__hash__()))
+
         with it('provides a representation'):
             class MyPoint(ValueObject):
                 def __init__(self, x, y=3):
