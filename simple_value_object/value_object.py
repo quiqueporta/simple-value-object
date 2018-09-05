@@ -107,10 +107,12 @@ class ValueObject(object):
 
         return "{}({})".format(self.__class__.__name__, ", ".join(args_values))
 
+    def __hash__(self):
+        return self.hash
 
     @property
     def hash(self):
-        return hash(self.__class__) and hash(frozenset(self.__dict__.items()))
+        return hash(repr(self))
 
 
 class ArgsSpec(object):

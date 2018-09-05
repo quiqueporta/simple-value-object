@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.1 (2015-09-05)
+------------------
+
+- Fix hash for value objects within value objects.
+
 1.1.0 (2018-09-04)
 ------------------
 
