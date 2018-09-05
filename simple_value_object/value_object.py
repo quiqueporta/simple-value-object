@@ -92,7 +92,7 @@ class ValueObject(object):
 
     @property
     def hash(self):
-        return hash(self.__class__) and hash(frozenset(self.__dict__.items()))
+        return hash(repr(self))
 
 
 class ArgsSpec(object):
