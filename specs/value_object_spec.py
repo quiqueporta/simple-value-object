@@ -8,9 +8,9 @@ from simple_value_object.exceptions import NotDeclaredArgsException, ArgWithoutV
 
 def py23_str(value):
     try:  # Python 2
-        return unicode(value)
-    except NameError:  # Python 3
-        return repr(value)
+        return value.decode('utf-8')
+    except AttributeError:  # Python 3
+        return value
 
 
 class Point(ValueObject):
@@ -84,9 +84,9 @@ with description('Value Object'):
             a_value_object_with_defaults = MyPoint(6)
             a_value_object_within_value_object = Money(100, Currency(u'€'))
 
-            expect(py23_str(a_value_object)).to(equal(u'Point(x=6, y=7)'))
-            expect(py23_str(a_value_object_with_defaults)).to(equal(u'MyPoint(x=6, y=3)'))
-            expect(py23_str(a_value_object_within_value_object)).to(equal(u'Money(amount=100, currency=Currency(symbol=€))'))
+            expect(py23_str(repr(a_value_object))).to(equal(u'Point(x=6, y=7)'))
+            expect(py23_str(repr(a_value_object_with_defaults))).to(equal(u'MyPoint(x=6, y=3)'))
+            expect(py23_str(repr(a_value_object_within_value_object))).to(equal(u'Money(amount=100, currency=Currency(symbol=€))'))
 
         with it('provides a representation of unicode parameters'):
             class MyValueObject(ValueObject):
@@ -95,7 +95,7 @@ with description('Value Object'):
 
             a_value_object = MyValueObject(u"Melón")
 
-            expect(py23_str(a_value_object)).to(equal(u"MyValueObject(text=Melón)"))
+            expect(py23_str(repr(a_value_object))).to(equal(u"MyValueObject(text=Melón)"))
 
     with context('restrictions'):
         with context('on initialization'):

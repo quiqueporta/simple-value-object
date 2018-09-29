@@ -1,4 +1,5 @@
 import six
+import sys
 from inspect import getargspec
 import inspect
 
@@ -94,11 +95,19 @@ class ValueObject(object):
                 value = value.encode('utf-8')
             if isinstance(value, six.string_types) or isinstance(value, six.binary_type):
                 value = value.decode('utf-8')
+            if isinstance(value,ValueObject):
+                if sys.version_info[0] < 3:
+                    value = repr(value).decode('utf-8')
             args_values.append(u"{}={}".format(arg, value))
 
         kwargs = u", ".join(args_values)
 
-        return u"{}({})".format(self.__class__.__name__, kwargs)
+        result = u"{}({})".format(self.__class__.__name__, kwargs)
+
+        if sys.version_info[0] < 3:
+            return result.encode('utf-8')
+
+        return result
 
     def __hash__(self):
         return self.hash
