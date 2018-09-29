@@ -1,3 +1,4 @@
+import six
 from inspect import getargspec
 import inspect
 
@@ -82,20 +83,29 @@ class ValueObject(object):
         return self.__dict__ != other.__dict__
 
     def __str__(self):
-        return repr(self)
+        return self.__repr__()
 
     def __repr__(self):
         args_spec = ArgsSpec(self.__init__)
-        args_values = ["{}={}".format(arg, getattr(self, arg)) for arg in args_spec.args[1:]]
+        args_values = []
+        for arg in args_spec.args[1:]:
+            value = getattr(self, arg)
+            if isinstance(value, six.text_type):
+                value = value.encode('utf-8')
+            if isinstance(value, six.string_types) or isinstance(value, six.binary_type):
+                value = value.decode('utf-8')
+            args_values.append(u"{}={}".format(arg, value))
 
-        return "{}({})".format(self.__class__.__name__, ", ".join(args_values))
+        kwargs = u", ".join(args_values)
+
+        return u"{}({})".format(self.__class__.__name__, kwargs)
 
     def __hash__(self):
         return self.hash
 
     @property
     def hash(self):
-        return hash(repr(self))
+        return hash(self.__repr__())
 
 
 class ArgsSpec(object):

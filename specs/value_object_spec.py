@@ -1,8 +1,16 @@
+# -*- coding: utf-8 -*-
 from expects import *
 
 from simple_value_object import ValueObject, invariant
 from simple_value_object.exceptions import NotDeclaredArgsException, ArgWithoutValueException, CannotBeChangeException, \
     ViolatedInvariantException, InvariantReturnValueException
+
+
+def py23_str(value):
+    try:  # Python 2
+        return unicode(value)
+    except NameError:  # Python 3
+        return repr(value)
 
 
 class Point(ValueObject):
@@ -57,14 +65,14 @@ with description('Value Object'):
             expect(a_value_object.y).to(equal(3))
 
         with it('can set another Value Object as parameter'):
-            a_money = Money(100, Currency('€'))
+            a_money = Money(100, Currency(u'€'))
 
-            expect(a_money).to(equal(Money(100, Currency('€'))))
-            expect(a_money.currency).to(equal(Currency('€')))
+            expect(a_money).to(equal(Money(100, Currency(u'€'))))
+            expect(a_money.currency).to(equal(Currency(u'€')))
 
         with it('can compare hash for value objects within value objects'):
-            a_money = Money(100, Currency('€'))
-            another_money = Money(100, Currency('€'))
+            a_money = Money(100, Currency(u'€'))
+            another_money = Money(100, Currency(u'€'))
             expect(a_money.__hash__()).to(equal(another_money.__hash__()))
 
         with it('provides a representation'):
@@ -74,18 +82,24 @@ with description('Value Object'):
 
             a_value_object = Point(6, 7)
             a_value_object_with_defaults = MyPoint(6)
-            a_value_object_within_value_object = Money(100, Currency('€'))
+            a_value_object_within_value_object = Money(100, Currency(u'€'))
 
-            expect(str(a_value_object)).to(equal('Point(x=6, y=7)'))
-            expect(repr(a_value_object)).to(equal('Point(x=6, y=7)'))
-            expect(str(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
-            expect(repr(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
-            expect(str(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
-            expect(repr(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
+            expect(py23_str(a_value_object)).to(equal(u'Point(x=6, y=7)'))
+            expect(py23_str(a_value_object_with_defaults)).to(equal(u'MyPoint(x=6, y=3)'))
+            expect(py23_str(a_value_object_within_value_object)).to(equal(u'Money(amount=100, currency=Currency(symbol=€))'))
+
+        with it('provides a representation of unicode parameters'):
+            class MyValueObject(ValueObject):
+                def __init__(self, text):
+                    pass
+
+            a_value_object = MyValueObject(u"Melón")
+
+            expect(py23_str(a_value_object)).to(equal(u"MyValueObject(text=Melón)"))
 
     with context('restrictions'):
         with context('on initialization'):
-            with it ('must at least have one arg in __init__'):
+            with it('must at least have one arg in __init__'):
                 class DummyWithNoArgsInInit(ValueObject):
                     pass
                 expect(lambda: DummyWithNoArgsInInit()).to(
