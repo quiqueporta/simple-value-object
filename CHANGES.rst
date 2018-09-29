@@ -1,12 +1,17 @@
 Changelog
 =========
 
-0.2.4 (2015-09-06)
+0.2.5 (2018-09-29)
+------------------
+
+- Fix repr with unicode chars
+
+0.2.4 (2018-09-06)
 ------------------
 
 - Another fix hash for value objects within value objects.
 
-0.2.3 (2015-09-06)
+0.2.3 (2018-09-06)
 ------------------
 
 - Fix hash for value objects within value objects.
