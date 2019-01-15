@@ -145,7 +145,7 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-0.3.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-0.3.1-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
