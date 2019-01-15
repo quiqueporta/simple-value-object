@@ -53,22 +53,23 @@ class ValueObject(object):
                     )
 
         def invariant_execute(invariant):
-            return_value = getattr(self, invariant)(self)
+            return_value = invariant(self, self)
 
             if not isinstance(return_value, bool):
                 raise InvariantReturnValueException()
 
             return return_value
 
+        def is_invariant(method):
+            try:
+                return 'invariant_func_wrapper' in str(method) and '__init__' not in str(method)
+            except TypeError:
+                return False
+
         def obtain_invariants():
-            for member in inspect.getmembers(cls):
-                try:
-                    is_method = hasattr(member[1], '__call__')
-                    is_a_invariant_method = 'invariant_func_wrapper' in inspect.getsourcelines(member[1].__code__)[0][0]
-                    if is_method and is_a_invariant_method:
-                        yield(member[0])
-                except AttributeError:
-                    continue
+            invariants = [member[1] for member in inspect.getmembers(cls, is_invariant)]
+            for invariant in invariants:
+                yield(invariant)
 
         def check_mutable_data_types():
             mutable_types = (list, dict, set)
