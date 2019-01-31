@@ -1,4 +1,4 @@
-from inspect import getargspec
+from inspect import getfullargspec
 import inspect
 
 from .exceptions import (
@@ -120,22 +120,22 @@ class ArgsSpec(object):
 
     def __init__(self, method):
         try:
-            self._args, self._varargs, self._keywords, self._defaults = getargspec(method)
+            self.fullargs = getfullargspec(method)
         except TypeError:
             raise NotDeclaredArgsException()
 
     @property
     def args(self):
-        return self._args
+        return self.fullargs.args
 
     @property
     def varargs(self):
-        return self._varargs
+        return self.fullargs.varargs
 
     @property
     def keywords(self):
-        return self._keywords
+        return self.fullargs.kwonlyargs
 
     @property
     def defaults(self):
-        return self._defaults
+        return self.fullargs.defaults
