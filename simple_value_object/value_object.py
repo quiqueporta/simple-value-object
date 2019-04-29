@@ -5,7 +5,6 @@ from .exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
-    MutableTypeNotAllowedException,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
@@ -20,6 +19,14 @@ class ValueObject(object):
         self = super(ValueObject, cls).__new__(cls)
 
         args_spec = ArgsSpec(self.__init__)
+
+        def replace_mutable_kwarg_with_inmutable_types(args_spec):
+            for arg, value in kwargs.items():
+                if type(value) is dict:
+                    kwargs[arg] = imdict(value)
+                if type(value) in [list, set]:
+                    kwargs[arg] = tuple(value)
+
 
         def check_class_are_initialized():
             no_arguments_in_init_constructor = len(args_spec.args) <= MIN_NUMBER_ARGS
@@ -71,18 +78,8 @@ class ValueObject(object):
             for invariant in invariants:
                 yield(invariant)
 
-        def check_mutable_data_types():
-            mutable_types = (list, dict, set)
-            for arg in args:
-                if type(arg) in mutable_types:
-                    raise MutableTypeNotAllowedException("Mutable args are not allowed.")
-
-            for key, value in kwargs.items():
-                if type(value) in mutable_types:
-                    raise MutableTypeNotAllowedException("'{}' cannot be a mutable data type.".format(key))
-
+        replace_mutable_kwarg_with_inmutable_types(args_spec)
         check_class_are_initialized()
-        check_mutable_data_types()
         assign_instance_arguments()
         check_invariants()
 
@@ -139,3 +136,19 @@ class ArgsSpec(object):
     @property
     def defaults(self):
         return self._defaults
+
+
+class imdict(dict):
+   def __hash__(self):
+       return id(self)
+
+   def _immutable(self, *args, **kws):
+       raise CannotBeChangeException()
+
+   __setitem__ = _immutable
+   __delitem__ = _immutable
+   clear       = _immutable
+   update      = _immutable
+   setdefault  = _immutable
+   pop         = _immutable
+   popitem     = _immutable

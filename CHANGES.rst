@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.0 (2019-04-29)
+------------------
+
+- Allow mutable data types but restricted for modifications.
+
 1.2.0 (2019-01-15)
 ------------------
 

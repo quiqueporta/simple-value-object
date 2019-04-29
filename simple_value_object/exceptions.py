@@ -26,6 +26,3 @@ class InvariantReturnValueException(Exception):
             'Invariants must return a boolean value'
         )
 
-
-class MutableTypeNotAllowedException(Exception):
-    pass

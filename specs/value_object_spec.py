@@ -5,7 +5,6 @@ from simple_value_object.exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
-    MutableTypeNotAllowedException,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
@@ -107,37 +106,43 @@ with description('Value Object'):
                 expect(lambda: Point(1)).to(raise_error(TypeError))
                 expect(lambda: Point(1, 2, 3)).to(raise_error(TypeError))
 
-            with it('does not allow mutable data types as kwargs'):
+        with context('mutable data types'):
+
+            with it('does not allow to change dicts arguments'):
                 class AValueObject(ValueObject):
 
                     def __init__(self, an_argument):
                         pass
 
-                expect(lambda: AValueObject(an_argument={'key': 'value'})).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
-                )
-                expect(lambda: AValueObject(an_argument=[1, 2, 3])).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
-                )
-                expect(lambda: AValueObject(an_argument=set([1, 2, 3]))).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
+                a_value_object = AValueObject(an_argument={'key': 'value'})
+                expect(lambda: a_value_object.an_argument.update({'key': 'another_value'})).to(
+                    raise_error(CannotBeChangeException)
                 )
 
-            with it('does not allow mutable data types as args'):
+            with it('does not allow to change lists arguments'):
                 class AValueObject(ValueObject):
 
                     def __init__(self, an_argument):
                         pass
 
-                expect(lambda: AValueObject({'key': 'value'})).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
-                expect(lambda: AValueObject([1, 2, 3])).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
-                expect(lambda: AValueObject(set([1, 2, 3]))).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
+                a_value_object = AValueObject(an_argument=[1, 2, 3])
+                def change_list_item():
+                    a_value_object.an_argument[0] = 4
+
+                expect(lambda: change_list_item()).to(raise_error(TypeError))
+
+            with it('does not allow to change set arguments'):
+                class AValueObject(ValueObject):
+
+                    def __init__(self, an_argument):
+                        pass
+
+                a_value_object = AValueObject(an_argument=set([1, 2, 3]))
+                def change_list_item():
+                    a_value_object.an_argument.clear()
+
+                expect(lambda: change_list_item()).to(raise_error(AttributeError))
+
 
     with context('forcing invariants'):
         with it('forces declared invariants'):
