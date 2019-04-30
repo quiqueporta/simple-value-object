@@ -133,10 +133,10 @@ class ArgsSpec(object):
         try:
             if sys.version_info.major == 2:
                 self.__argspec = inspect.getargspec(method)
-                self.__varkw = self.argspec.keywords
+                self.__varkw = self.__argspec.keywords
             else:
                 self.__argspec = inspect.getfullargspec(method)
-                self.__varkw = self.argspec.varkw
+                self.__varkw = self.__argspec.varkw
         except TypeError:
             raise NotDeclaredArgsException()
 
