@@ -19,11 +19,16 @@ class ValueObject(object):
 
         args_spec = ArgsSpec(self.__init__)
 
-        def check_class_are_initialized():
+        def check_class_initialization():
             init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
+
             if init_constructor_without_arguments:
                 raise NotDeclaredArgsException()
+
             if None in args:
+                raise ArgWithoutValueException()
+
+            if None in kwargs.values():
                 raise ArgWithoutValueException()
 
         def replace_mutable_kwargs_with_immutable_types():
@@ -44,8 +49,17 @@ class ValueObject(object):
             )
 
         def override_default_values_with_args():
+            sanitized_args = []
+            for arg in args:
+                if isinstance(arg, dict):
+                    sanitized_args.append(immutable_dict(arg))
+                elif isinstance(arg, (list, set)):
+                    sanitized_args.append(tuple(arg))
+                else:
+                    sanitized_args.append(arg)
+
             self.__dict__.update(
-                dict(list(zip(args_spec.args[1:], args)) + list(kwargs.items()))
+                dict(list(zip(args_spec.args[1:], sanitized_args)) + list(kwargs.items()))
             )
 
         def check_invariants():
@@ -76,7 +90,7 @@ class ValueObject(object):
             for invariant in invariants:
                 yield invariant
 
-        check_class_are_initialized()
+        check_class_initialization()
         replace_mutable_kwargs_with_immutable_types()
         assign_instance_arguments()
         check_invariants()
