@@ -1,11 +1,17 @@
 from expects import *
-
-from simple_value_object import ValueObject, invariant
+from mamba import (
+    context,
+    description,
+    it
+)
+from simple_value_object import (
+    ValueObject,
+    invariant
+)
 from simple_value_object.exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
-    MutableTypeNotAllowedException,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
@@ -27,31 +33,39 @@ class Currency(ValueObject):
 
 
 with description('Value Object'):
+
     with context('standard behavior'):
+
         with it('generates constructor, fields and accessors for declared fields'):
-            a_value_object = Point(5, 3)
-            expect(a_value_object.x).to(equal(5))
-            expect(a_value_object.y).to(equal(3))
+            a_point = Point(5, 3)
+
+            expect(a_point.x).to(equal(5))
+            expect(a_point.y).to(equal(3))
 
         with it('provides equality based on declared fields values'):
-            a_value_object = Point(5, 3)
-            same_value_object = Point(5, 3)
-            different_value_object = Point(6, 3)
+            a_point = Point(5, 3)
+            same_point = Point(5, 3)
+            different_point = Point(6, 3)
 
-            expect(a_value_object).to(equal(same_value_object))
-            expect(a_value_object).not_to(equal(different_value_object))
-            expect(a_value_object != different_value_object).to(be(True))
+            expect(a_point).to(equal(same_point))
+            expect(a_point).not_to(equal(different_point))
+            expect(a_point != different_point).to(be_true)
 
         with it('provides hash code generation based on declared fields values'):
-            a_value_object = Point(5, 3)
-            same_value_object = Point(5, 3)
-            different_value_object = Point(6, 3)
-            expect(a_value_object.hash).to(equal(same_value_object.hash))
-            expect(a_value_object.hash).not_to(equal(different_value_object.hash))
+            a_point = Point(5, 3)
+            same_point = Point(5, 3)
+            different_point = Point(6, 3)
+
+            expect(a_point.hash).to(equal(same_point.hash))
+            expect(a_point.hash).not_to(equal(different_point.hash))
 
         with it('values can not be changed'):
-            a_value_object = Point(5, 3)
-            expect(lambda: setattr(a_value_object, 'x', 4)).to(
+            a_point = Point(5, 3)
+
+            def change_point():
+                a_point.x = 4
+
+            expect(lambda: change_point()).to(
                 raise_error(CannotBeChangeException, 'You cannot change values from a Value Object, create a new one')
             )
 
@@ -59,8 +73,10 @@ with description('Value Object'):
             class MyPoint(ValueObject):
                 def __init__(self, x, y=3):
                     pass
-            a_value_object = MyPoint(5)
-            expect(a_value_object.y).to(equal(3))
+
+            my_point = MyPoint(5)
+            expect(my_point.x).to(equal(5))
+            expect(my_point.y).to(equal(3))
 
         with it('can set another Value Object as parameter'):
             a_money = Money(100, Currency('€'))
@@ -70,79 +86,141 @@ with description('Value Object'):
 
         with it('can compare hash for value objects within value objects'):
             a_money = Money(100, Currency('€'))
+
             another_money = Money(100, Currency('€'))
-            expect(a_money.__hash__()).to(equal(another_money.__hash__()))
+            expect(a_money.hash).to(equal(another_money.hash))
 
         with it('provides a representation'):
             class MyPoint(ValueObject):
                 def __init__(self, x, y=3):
                     pass
 
-            a_value_object = Point(6, 7)
-            a_value_object_with_defaults = MyPoint(6)
-            a_value_object_within_value_object = Money(100, Currency('€'))
+            a_point_object = Point(6, 7)
+            a_point_object_with_defaults = MyPoint(6)
+            a_point_object_within_value_object = Money(100, Currency('€'))
 
-            expect(str(a_value_object)).to(equal('Point(x=6, y=7)'))
-            expect(repr(a_value_object)).to(equal('Point(x=6, y=7)'))
-            expect(str(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
-            expect(repr(a_value_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
-            expect(str(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
-            expect(repr(a_value_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
-
+            expect(str(a_point_object)).to(equal('Point(x=6, y=7)'))
+            expect(repr(a_point_object)).to(equal('Point(x=6, y=7)'))
+            expect(str(a_point_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
+            expect(repr(a_point_object_with_defaults)).to(equal('MyPoint(x=6, y=3)'))
+            expect(str(a_point_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
+            expect(repr(a_point_object_within_value_object)).to(equal('Money(amount=100, currency=Currency(symbol=€))'))
 
     with context('restrictions'):
+
         with context('on initialization'):
+
             with it ('must at least have one arg in __init__'):
-                class DummyWithNoArgsInInit(ValueObject):
+                class WithNoArgs(ValueObject):
                     pass
-                expect(lambda: DummyWithNoArgsInInit()).to(
+
+                expect(lambda: WithNoArgs()).to(
                     raise_error(NotDeclaredArgsException, 'No arguments declared in __init__')
                 )
+
             with it ('must not have any arg initialized to None'):
-                class DummyWithDeclaredFieldsWithoutValue(ValueObject):
-                    def __init__(self, x, y):
-                        pass
-                expect(lambda: DummyWithDeclaredFieldsWithoutValue(1, None)).to(raise_error(ArgWithoutValueException))
+                expect(lambda: Point(1, None)).to(
+                    raise_error(ArgWithoutValueException)
+                )
+
+            with it ('must not have any kwarg initialized to None'):
+                expect(lambda: Point(1, y=None)).to(
+                    raise_error(ArgWithoutValueException)
+                )
+
             with it('must have number of values equal to number of args'):
                 expect(lambda: Point(1)).to(raise_error(TypeError))
                 expect(lambda: Point(1, 2, 3)).to(raise_error(TypeError))
 
-            with it('does not allow mutable data types as kwargs'):
-                class AValueObject(ValueObject):
+        with context('with mutable data types'):
 
-                    def __init__(self, an_argument):
+            with it('does not allow to change dicts arguments'):
+                class AValueObject(ValueObject):
+                    def __init__(self, a_dict):
+                        pass
+                a_value_object = AValueObject(a_dict={'key': 'value'})
+                another_value_object = AValueObject({'key': 'value'})
+
+                expect(lambda: a_value_object.a_dict.update({'key': 'another_value'})).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: another_value_object.a_dict.update({'key': 'another_value'})).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: a_value_object.a_dict.clear()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: another_value_object.a_dict.clear()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                def remove_key():
+                    del(a_value_object.a_dict['key'])
+                    del(another_value_object.a_dict['key'])
+                expect(lambda: remove_key()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                def change_key():
+                    a_value_object.a_dict['key'] = 'new_value'
+                    another_value_object.a_dict['key'] = 'new_value'
+                expect(lambda: change_key()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: a_value_object.a_dict.pop()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: another_value_object.a_dict.pop()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: a_value_object.a_dict.popitem()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: another_value_object.a_dict.popitem()).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: a_value_object.a_dict.setdefault('key')).to(
+                    raise_error(CannotBeChangeException)
+                )
+                expect(lambda: another_value_object.a_dict.setdefault('key')).to(
+                    raise_error(CannotBeChangeException)
+                )
+
+            with it('does not allow to change lists arguments'):
+                class AValueObject(ValueObject):
+                    def __init__(self, a_list):
                         pass
 
-                expect(lambda: AValueObject(an_argument={'key': 'value'})).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
-                )
-                expect(lambda: AValueObject(an_argument=[1, 2, 3])).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
-                )
-                expect(lambda: AValueObject(an_argument=set([1, 2, 3]))).to(
-                    raise_error(MutableTypeNotAllowedException, "'an_argument' cannot be a mutable data type.")
-                )
+                a_value_object = AValueObject(a_list=[1, 2, 3])
+                another_value_object = AValueObject([1, 2, 3])
 
-            with it('does not allow mutable data types as args'):
+                def change_list_item():
+                    a_value_object.a_list[0] = 4
+                    another_value_object.a_list[0] = 4
+                expect(lambda: change_list_item()).to(raise_error(TypeError))
+                def delete_list_item():
+                    del(a_value_object.a_list[0])
+                    del(another_value_object.a_list[0])
+                expect(lambda: delete_list_item()).to(raise_error(TypeError))
+                expect(lambda: a_value_object.a_list.clear()).to(raise_error(AttributeError))
+                expect(lambda: another_value_object.a_list.clear()).to(raise_error(AttributeError))
+
+            with it('does not allow to change set arguments'):
                 class AValueObject(ValueObject):
-
-                    def __init__(self, an_argument):
+                    def __init__(self, a_set):
                         pass
 
-                expect(lambda: AValueObject({'key': 'value'})).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
-                expect(lambda: AValueObject([1, 2, 3])).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
-                expect(lambda: AValueObject(set([1, 2, 3]))).to(
-                    raise_error(MutableTypeNotAllowedException, "Mutable args are not allowed.")
-                )
+                a_value_object = AValueObject(a_set=set([1, 2, 3]))
+                another_value_object = AValueObject(set([1, 2, 3]))
+
+                def change_list_item():
+                    a_value_object.a_set.clear()
+                    another_value_object.a_set.clear()
+
+                expect(lambda: change_list_item()).to(raise_error(AttributeError))
 
     with context('forcing invariants'):
+
         with it('forces declared invariants'):
             class AnotherPoint(ValueObject):
-
                 def __init__(self, x, y):
                     pass
 
@@ -154,12 +232,13 @@ with description('Value Object'):
                 def x_less_than_y(cls, instance):
                     return instance.x < instance.y
 
+
             expect(lambda: AnotherPoint(-5, 3)).to(
-                raise_error(ViolatedInvariantException)
+                raise_error(ViolatedInvariantException, 'Args violates invariant: inside_first_quadrant')
             )
 
             expect(lambda: AnotherPoint(6, 3)).to(
-                raise_error(ViolatedInvariantException)
+                raise_error(ViolatedInvariantException, 'Args violates invariant: x_less_than_y')
             )
 
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):
@@ -173,4 +252,3 @@ with description('Value Object'):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
-

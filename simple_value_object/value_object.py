@@ -1,18 +1,18 @@
 import sys
 import inspect
+from inspect import getargspec
 
 from .exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
-    MutableTypeNotAllowedException,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
 
-
 MIN_NUMBER_ARGS = 1
-
+INVARIANT_NAME = 0
+INVARIANT_METHOD = 1
 
 class ValueObject(object):
 
@@ -21,34 +21,55 @@ class ValueObject(object):
 
         args_spec = ArgsSpec(self.__init__)
 
-        def check_class_are_initialized():
-            no_arguments_in_init_constructor = len(args_spec.args) <= MIN_NUMBER_ARGS
-            if no_arguments_in_init_constructor:
+        def check_class_initialization():
+            init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
+
+            if init_constructor_without_arguments:
                 raise NotDeclaredArgsException()
+
             if None in args:
                 raise ArgWithoutValueException()
 
-        def assign_instance_arguments():
-            assign_default_values(args_spec)
-            override_default_values_with_args(args_spec)
+            if None in kwargs.values():
+                raise ArgWithoutValueException()
 
-        def assign_default_values(args_spec):
+        def replace_mutable_kwargs_with_immutable_types():
+            for arg, value in kwargs.items():
+                if isinstance(value, dict):
+                    kwargs[arg] = immutable_dict(value)
+                if isinstance(value, (list, set)):
+                    kwargs[arg] = tuple(value)
+
+        def assign_instance_arguments():
+            assign_default_values()
+            override_default_values_with_args()
+
+        def assign_default_values():
             defaults = () if not args_spec.defaults else args_spec.defaults
             self.__dict__.update(
                 dict(zip(args_spec.args[:0:-1], defaults[::-1]))
             )
 
-        def override_default_values_with_args(args_spec):
+        def override_default_values_with_args():
+            sanitized_args = []
+            for arg in args:
+                if isinstance(arg, dict):
+                    sanitized_args.append(immutable_dict(arg))
+                elif isinstance(arg, (list, set)):
+                    sanitized_args.append(tuple(arg))
+                else:
+                    sanitized_args.append(arg)
+
             self.__dict__.update(
-                dict(list(zip(args_spec.args[1:], args)) + list(kwargs.items()))
+                dict(list(zip(args_spec.args[1:], sanitized_args)) + list(kwargs.items()))
             )
 
         def check_invariants():
             for invariant in obtain_invariants():
-                if not invariant_execute(invariant):
+                if not invariant_execute(invariant[INVARIANT_METHOD]):
                     raise ViolatedInvariantException(
-                        'Args values {} violates invariant: {}'.format(
-                            list(self.__dict__.values()), invariant
+                        'Args violates invariant: {}'.format(
+                            invariant[INVARIANT_NAME]
                         )
                     )
 
@@ -67,22 +88,12 @@ class ValueObject(object):
                 return False
 
         def obtain_invariants():
-            invariants = [member[1] for member in inspect.getmembers(cls, is_invariant)]
+            invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_invariant)]
             for invariant in invariants:
-                yield(invariant)
+                yield invariant
 
-        def check_mutable_data_types():
-            mutable_types = (list, dict, set)
-            for arg in args:
-                if type(arg) in mutable_types:
-                    raise MutableTypeNotAllowedException("Mutable args are not allowed.")
-
-            for key, value in kwargs.items():
-                if type(value) in mutable_types:
-                    raise MutableTypeNotAllowedException("'{}' cannot be a mutable data type.".format(key))
-
-        check_class_are_initialized()
-        check_mutable_data_types()
+        check_class_initialization()
+        replace_mutable_kwargs_with_immutable_types()
         assign_instance_arguments()
         check_invariants()
 
@@ -121,26 +132,43 @@ class ArgsSpec(object):
     def __init__(self, method):
         try:
             if sys.version_info.major == 2:
-                self.argspec = inspect.getargspec(method)
-                self.varkw = self.argspec.keywords
+                self.__argspec = inspect.getargspec(method)
+                self.__varkw = self.argspec.keywords
             else:
-                self.argspec = inspect.getfullargspec(method)
-                self.varkw = self.argspec.varkw
+                self.__argspec = inspect.getfullargspec(method)
+                self.__varkw = self.argspec.varkw
         except TypeError:
             raise NotDeclaredArgsException()
 
     @property
     def args(self):
-        return self.argspec.args
+        return self.__argspec.args
 
     @property
     def varargs(self):
-        return self.argspec.varargs
+        return self.__argspec.varargs
 
     @property
     def keywords(self):
-        return self.varkw
+        return self.__varkw
 
     @property
     def defaults(self):
-        return self.argspec.defaults
+        return self.__argspec.defaults
+
+
+class immutable_dict(dict):
+
+    def __hash__(self):
+        return id(self)
+
+    def _immutable(self, *args, **kwargs):
+        raise CannotBeChangeException()
+
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    clear = _immutable
+    update = _immutable
+    setdefault = _immutable
+    pop = _immutable
+    popitem = _immutable

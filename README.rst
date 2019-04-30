@@ -133,32 +133,14 @@ Invariants
             return instance.x < instance.y
 
     Point(-5, 3)
-    #ViolatedInvariantException: Args values [-5, 3] violates invariant: inside_first_cuadrant
+    #ViolatedInvariantException: Args violates invariant: inside_first_cuadrant
 
     Point(6, 3)
-    #ViolatedInvariantException: Args values [6, 3] violates invariant: x_less_than_y
+    #ViolatedInvariantException: Args violates invariant: x_less_than_y
 
     Point(1,3)
     #<__main__.Point at 0x7f2bd043c780>
 
-
-Mutable types not allowed
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-    from simple_value_object import ValueObject, invariant
-
-    class AValueObject(ValueObject):
-
-        def __init__(self, an_arg):
-            pass
-
-    AValueObject(an_arg={'key': 'value'})
-    #MutableTypeNotAllowedException: 'an_arg' cannot be a mutable data type.
-
-    AValueObject({'key': 'value'})
-    #MutableTypeNotAllowedException: Mutable args are not allowed.
 
 ValueObject within ValueObject
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -187,7 +169,7 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-1.2.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-1.3.0-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
@@ -202,4 +184,4 @@ Test
 .. |License GPLv3| image:: https://img.shields.io/badge/license-GPLv3-red.svg
     :target: https://opensource.org/licenses/GPL-3.0
 
-.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5,_3.6,_3.7-blue.svg
