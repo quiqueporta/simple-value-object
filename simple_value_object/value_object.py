@@ -1,3 +1,4 @@
+import sys
 import inspect
 from inspect import getargspec
 
@@ -130,25 +131,30 @@ class ArgsSpec(object):
 
     def __init__(self, method):
         try:
-            self._args, self._varargs, self._keywords, self._defaults = getargspec(method)
+            if sys.version_info.major == 2:
+                self.__argspec = inspect.getargspec(method)
+                self.__varkw = self.argspec.keywords
+            else:
+                self.__argspec = inspect.getfullargspec(method)
+                self.__varkw = self.argspec.varkw
         except TypeError:
             raise NotDeclaredArgsException()
 
     @property
     def args(self):
-        return self._args
+        return self.__argspec.args
 
     @property
     def varargs(self):
-        return self._varargs
+        return self.__argspec.varargs
 
     @property
     def keywords(self):
-        return self._keywords
+        return self.__varkw
 
     @property
     def defaults(self):
-        return self._defaults
+        return self.__argspec.defaults
 
 
 class immutable_dict(dict):
