@@ -1,5 +1,5 @@
-from inspect import getargspec
 import inspect
+from inspect import getargspec
 
 from .exceptions import (
     ArgWithoutValueException,
@@ -8,7 +8,6 @@ from .exceptions import (
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
-
 
 MIN_NUMBER_ARGS = 1
 

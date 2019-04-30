@@ -1,6 +1,13 @@
 from expects import *
-
-from simple_value_object import ValueObject, invariant
+from mamba import (
+    context,
+    description,
+    it
+)
+from simple_value_object import (
+    ValueObject,
+    invariant
+)
 from simple_value_object.exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
@@ -178,4 +185,3 @@ with description('Value Object'):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
-
