@@ -232,12 +232,13 @@ with description('Value Object'):
                 def x_less_than_y(cls, instance):
                     return instance.x < instance.y
 
+
             expect(lambda: AnotherPoint(-5, 3)).to(
-                raise_error(ViolatedInvariantException)
+                raise_error(ViolatedInvariantException, 'Args violates invariant: inside_first_quadrant')
             )
 
             expect(lambda: AnotherPoint(6, 3)).to(
-                raise_error(ViolatedInvariantException)
+                raise_error(ViolatedInvariantException, 'Args violates invariant: x_less_than_y')
             )
 
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):

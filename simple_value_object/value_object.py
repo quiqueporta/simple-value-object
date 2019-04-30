@@ -10,7 +10,8 @@ from .exceptions import (
 )
 
 MIN_NUMBER_ARGS = 1
-
+INVARIANT_NAME = 0
+INVARIANT_METHOD = 1
 
 class ValueObject(object):
 
@@ -64,10 +65,10 @@ class ValueObject(object):
 
         def check_invariants():
             for invariant in obtain_invariants():
-                if not invariant_execute(invariant):
+                if not invariant_execute(invariant[INVARIANT_METHOD]):
                     raise ViolatedInvariantException(
-                        'Args values {} violates invariant: {}'.format(
-                            list(self.__dict__.values()), invariant
+                        'Args violates invariant: {}'.format(
+                            invariant[INVARIANT_NAME]
                         )
                     )
 
@@ -86,7 +87,7 @@ class ValueObject(object):
                 return False
 
         def obtain_invariants():
-            invariants = [member[1] for member in inspect.getmembers(cls, is_invariant)]
+            invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_invariant)]
             for invariant in invariants:
                 yield invariant
 
