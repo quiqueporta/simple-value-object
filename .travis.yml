@@ -1,6 +1,7 @@
 language: python
 
 python:
+  - "3.6"
   - "3.5"
   - "3.4"
   - "3.3"
@@ -10,13 +11,11 @@ branches:
   only:
     - master
 
-# command to install requirements
 install:
   - pip install -r requirements-test.txt
   - pip install coveralls
   - python setup.py -q develop
 
-# command to run tests, e.g. python setup.py test
 script:
     - PYTHONPATH=$PYTHONPATH:. mamba --enable-coverage
 
