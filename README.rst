@@ -133,10 +133,10 @@ Invariants
             return instance.x < instance.y
 
     Point(-5, 3)
-    #ViolatedInvariantException: Args values [-5, 3] violates invariant: inside_first_cuadrant
+    #ViolatedInvariantException: Args violates invariant: inside_first_cuadrant
 
     Point(6, 3)
-    #ViolatedInvariantException: Args values [6, 3] violates invariant: x_less_than_y
+    #ViolatedInvariantException: Args violates invariant: x_less_than_y
 
     Point(1,3)
     #<__main__.Point at 0x7f2bd043c780>
