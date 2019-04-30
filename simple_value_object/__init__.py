@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from .value_object import ValueObject
-from .decorators import invariant
+from .decorators import invariant, param_invariant
 
 VERSION = (1, 3, 0, 'final')
 __version__ = VERSION
