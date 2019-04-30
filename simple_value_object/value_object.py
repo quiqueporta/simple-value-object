@@ -19,7 +19,7 @@ class ValueObject(object):
 
         args_spec = ArgsSpec(self.__init__)
 
-        def replace_mutable_kwarg_with_inmutable_types(args_spec):
+        def replace_mutable_kwargs_with_immutable_types(args_spec):
             for arg, value in kwargs.items():
                 if type(value) is dict:
                     kwargs[arg] = imdict(value)
@@ -77,7 +77,7 @@ class ValueObject(object):
             for invariant in invariants:
                 yield(invariant)
 
-        replace_mutable_kwarg_with_inmutable_types(args_spec)
+        replace_mutable_kwargs_with_immutable_types(args_spec)
         check_class_are_initialized()
         assign_instance_arguments()
         check_invariants()
