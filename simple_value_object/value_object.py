@@ -19,32 +19,31 @@ class ValueObject(object):
 
         args_spec = ArgsSpec(self.__init__)
 
-        def replace_mutable_kwargs_with_immutable_types(args_spec):
-            for arg, value in kwargs.items():
-                if type(value) is dict:
-                    kwargs[arg] = imdict(value)
-                if type(value) in [list, set]:
-                    kwargs[arg] = tuple(value)
-
-
         def check_class_are_initialized():
-            no_arguments_in_init_constructor = len(args_spec.args) <= MIN_NUMBER_ARGS
-            if no_arguments_in_init_constructor:
+            init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
+            if init_constructor_without_arguments:
                 raise NotDeclaredArgsException()
             if None in args:
                 raise ArgWithoutValueException()
 
-        def assign_instance_arguments():
-            assign_default_values(args_spec)
-            override_default_values_with_args(args_spec)
+        def replace_mutable_kwargs_with_immutable_types():
+            for arg, value in kwargs.items():
+                if isinstance(value, dict):
+                    kwargs[arg] = immutable_dict(value)
+                if isinstance(value, (list, set)):
+                    kwargs[arg] = tuple(value)
 
-        def assign_default_values(args_spec):
+        def assign_instance_arguments():
+            assign_default_values()
+            override_default_values_with_args()
+
+        def assign_default_values():
             defaults = () if not args_spec.defaults else args_spec.defaults
             self.__dict__.update(
                 dict(zip(args_spec.args[:0:-1], defaults[::-1]))
             )
 
-        def override_default_values_with_args(args_spec):
+        def override_default_values_with_args():
             self.__dict__.update(
                 dict(list(zip(args_spec.args[1:], args)) + list(kwargs.items()))
             )
@@ -75,10 +74,10 @@ class ValueObject(object):
         def obtain_invariants():
             invariants = [member[1] for member in inspect.getmembers(cls, is_invariant)]
             for invariant in invariants:
-                yield(invariant)
+                yield invariant
 
-        replace_mutable_kwargs_with_immutable_types(args_spec)
         check_class_are_initialized()
+        replace_mutable_kwargs_with_immutable_types()
         assign_instance_arguments()
         check_invariants()
 
@@ -137,17 +136,18 @@ class ArgsSpec(object):
         return self._defaults
 
 
-class imdict(dict):
-   def __hash__(self):
-       return id(self)
+class immutable_dict(dict):
 
-   def _immutable(self, *args, **kws):
-       raise CannotBeChangeException()
+    def __hash__(self):
+        return id(self)
 
-   __setitem__ = _immutable
-   __delitem__ = _immutable
-   clear       = _immutable
-   update      = _immutable
-   setdefault  = _immutable
-   pop         = _immutable
-   popitem     = _immutable
+    def _immutable(self, *args, **kwargs):
+        raise CannotBeChangeException()
+
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    clear = _immutable
+    update = _immutable
+    setdefault = _immutable
+    pop = _immutable
+    popitem = _immutable
