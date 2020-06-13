@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.4.0 (2020-06-13)
+------------------
+
+- Removing deprecation warnings
+- Change license to MIT/X11
+
 1.3.0 (2019-04-29)
 ------------------
 

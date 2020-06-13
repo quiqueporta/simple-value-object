@@ -169,7 +169,7 @@ Test
     > PYTHONPATH=$PYTHONPATH:. mamba
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-1.3.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-1.4.0-blue.svg
 
 .. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
     :target: https://travis-ci.org/quiqueporta/simple-value-object
@@ -183,4 +183,4 @@ Test
 
 .. |License MIT| image:: https://img.shields.io/github/license/quiqueporta/simple-value-object
 
-.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.6,_3.7,_3.8-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.4,_3.5,_3.6,_3.7,_3.8-blue.svg
