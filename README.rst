@@ -1,7 +1,7 @@
 Value Object
 ============
 
-|Version Number| |Build Status| |Coverage Status| |Requirements Status| |Python Version| |License GPLv3|
+|Version Number| |Build Status| |Coverage Status| |Requirements Status| |Python Version| |License MIT|
 
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
@@ -181,7 +181,6 @@ Test
      :target: https://requires.io/github/quiqueporta/simple-value-object/requirements/?branch=master
           :alt: Requirements Status
 
-.. |License GPLv3| image:: https://img.shields.io/badge/license-GPLv3-red.svg
-    :target: https://opensource.org/licenses/GPL-3.0
+.. |License MIT| image:: https://img.shields.io/github/license/quiqueporta/simple-value-object
 
 .. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.6,_3.7,_3.8-blue.svg
