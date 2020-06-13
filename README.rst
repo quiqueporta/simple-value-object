@@ -184,4 +184,4 @@ Test
 .. |License GPLv3| image:: https://img.shields.io/badge/license-GPLv3-red.svg
     :target: https://opensource.org/licenses/GPL-3.0
 
-.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.3,_3.4,_3.5,_3.6,_3.7-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-2.7,_3.6,_3.7,_3.8-blue.svg
