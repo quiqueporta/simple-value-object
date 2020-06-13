@@ -68,7 +68,7 @@ class ValueObject(object):
             for invariant in obtain_invariants():
                 if not invariant_execute(invariant[INVARIANT_METHOD]):
                     raise ViolatedInvariantException(
-                        'Params violates invariant: {}'.format(
+                        'Args violates invariant: {}'.format(
                             invariant[INVARIANT_NAME]
                         )
                     )
@@ -81,22 +81,15 @@ class ValueObject(object):
 
             return return_value
 
-        def _is_invariant_method_with_name(method, name):
+        def is_invariant(method):
             try:
-                return name in str(method) and '__init__' not in str(method)
+                return 'invariant_func_wrapper' in str(method) and '__init__' not in str(method)
             except TypeError:
                 return False
 
-        def is_invariant(method):
-            return _is_invariant_method_with_name(method, 'invariant_func_wrapper')
-
-        def is_param_invariant(method):
-            return _is_invariant_method_with_name(method, 'param_invariant_func_wrapper')
-
         def obtain_invariants():
-            param_invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_param_invariant)]
             invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_invariant)]
-            for invariant in param_invariants + invariants:
+            for invariant in invariants:
                 yield invariant
 
         check_class_initialization()

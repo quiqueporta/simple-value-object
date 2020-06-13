@@ -112,36 +112,8 @@ Hash code based on field values
     # False
 
 
-Check Invariants
-~~~~~~~~~~~~~~~~
-
-There are two kinds of invariants:
-
-Param Invariants
-****************
-
-These invariants are the first to be evaluated.
-
-.. code-block:: python
-
-    from simple_value_object import ValueObject, param_invariant
-
-    class Point(ValueObject):
-
-        def __init__(self, x, y):
-            pass
-
-        @param_invariant
-        def x_must_be_integer(cls, instance):
-            return isinstance(instance.x, int)
-
-    Point(x="5", y=3)
-    #ViolatedInvariantException: Params violates invariant: x_must_be_integer
-
 Invariants
-**********
-
-These invariants are evaluated after the @param_invariant
+~~~~~~~~~~
 
 .. code-block:: python
 
@@ -157,15 +129,17 @@ These invariants are evaluated after the @param_invariant
             return instance.x > 0 and instance.y > 0
 
         @invariant
-        def x_lower_than_y(cls, instance):
+        def x_less_than_y(cls, instance):
             return instance.x < instance.y
 
     Point(-5, 3)
-    #ViolatedInvariantException: Params violates invariant: inside_first_quadrant
+    #ViolatedInvariantException: Args violates invariant: inside_first_cuadrant
 
     Point(6, 3)
-    #ViolatedInvariantException: Params violates invariant: x_lower_than_y
+    #ViolatedInvariantException: Args violates invariant: x_less_than_y
 
+    Point(1,3)
+    #<__main__.Point at 0x7f2bd043c780>
 
 
 ValueObject within ValueObject

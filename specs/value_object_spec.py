@@ -8,7 +8,6 @@ from simple_value_object import (
     ValueObject,
     invariant
 )
-from simple_value_object import param_invariant
 from simple_value_object.exceptions import (
     ArgWithoutValueException,
     CannotBeChangeException,
@@ -235,11 +234,11 @@ with description('Value Object'):
 
 
             expect(lambda: AnotherPoint(-5, 3)).to(
-                raise_error(ViolatedInvariantException, 'Params violates invariant: inside_first_quadrant')
+                raise_error(ViolatedInvariantException, 'Args violates invariant: inside_first_quadrant')
             )
 
             expect(lambda: AnotherPoint(6, 3)).to(
-                raise_error(ViolatedInvariantException, 'Params violates invariant: x_less_than_y')
+                raise_error(ViolatedInvariantException, 'Args violates invariant: x_less_than_y')
             )
 
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):
@@ -253,37 +252,3 @@ with description('Value Object'):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
-
-    with context('forcing invariants for params'):
-
-        with it('forces declared params invariants'):
-            class AnotherPoint(ValueObject):
-                def __init__(self, x, y):
-                    pass
-
-                @param_invariant
-                def x_must_be_integer(cls, instance):
-                    return isinstance(instance.x, int)
-
-
-            expect(lambda: AnotherPoint(x=5.8, y=3)).to(
-                raise_error(ViolatedInvariantException, 'Params violates invariant: x_must_be_integer')
-            )
-
-        with it('evaluates param invariants first'):
-            class AnotherPoint(ValueObject):
-                def __init__(self, x, y):
-                    pass
-
-                @param_invariant
-                def x_must_be_integer(cls, instance):
-                    return isinstance(instance.x, int)
-
-                @invariant
-                def x_is_odd(cls, instance):
-                    return instance.x % 2 != 0
-
-
-            expect(lambda: AnotherPoint(x="1", y=3)).to(
-                raise_error(ViolatedInvariantException, 'Params violates invariant: x_must_be_integer')
-            )
