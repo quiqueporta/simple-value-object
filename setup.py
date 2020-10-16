@@ -6,7 +6,7 @@ from simple_value_object import get_version
 setup(
     name='simple-value-object',
     version=get_version(),
-    license='GPLv3',
+    license='MIT/X11',
     author='Quique Porta',
     author_email='quiqueporta@gmail.com',
     description='A simple mixin for create Value Objects',
