@@ -1,9 +1,7 @@
 import sys
 import inspect
-from inspect import getargspec
 
 from .exceptions import (
-    ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
     NotDeclaredArgsException,
@@ -13,6 +11,7 @@ from .exceptions import (
 MIN_NUMBER_ARGS = 1
 INVARIANT_NAME = 0
 INVARIANT_METHOD = 1
+
 
 class ValueObject(object):
 
@@ -26,12 +25,6 @@ class ValueObject(object):
 
             if init_constructor_without_arguments:
                 raise NotDeclaredArgsException()
-
-            if None in args:
-                raise ArgWithoutValueException()
-
-            if None in kwargs.values():
-                raise ArgWithoutValueException()
 
         def replace_mutable_kwargs_with_immutable_types():
             for arg, value in kwargs.items():

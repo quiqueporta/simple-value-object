@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.0 (2020-12-07)
+------------------
+
+- Allow None as params. You can control it with invariants.
+
 1.4.0 (2020-06-13)
 ------------------
 

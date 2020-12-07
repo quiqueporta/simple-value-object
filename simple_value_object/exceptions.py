@@ -5,10 +5,6 @@ class NotDeclaredArgsException(Exception):
         )
 
 
-class ArgWithoutValueException(Exception):
-    pass
-
-
 class CannotBeChangeException(Exception):
     def __init__(self, *args, **kwargs):
         super(CannotBeChangeException, self).__init__(

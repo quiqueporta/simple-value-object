@@ -9,7 +9,6 @@ from simple_value_object import (
     invariant
 )
 from simple_value_object.exceptions import (
-    ArgWithoutValueException,
     CannotBeChangeException,
     InvariantReturnValueException,
     NotDeclaredArgsException,
@@ -116,16 +115,6 @@ with description('Value Object'):
 
                 expect(lambda: WithNoArgs()).to(
                     raise_error(NotDeclaredArgsException, 'No arguments declared in __init__')
-                )
-
-            with it ('must not have any arg initialized to None'):
-                expect(lambda: Point(1, None)).to(
-                    raise_error(ArgWithoutValueException)
-                )
-
-            with it ('must not have any kwarg initialized to None'):
-                expect(lambda: Point(1, y=None)).to(
-                    raise_error(ArgWithoutValueException)
                 )
 
             with it('must have number of values equal to number of args'):
