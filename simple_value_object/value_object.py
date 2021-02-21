@@ -30,8 +30,10 @@ class ValueObject(object):
             for arg, value in kwargs.items():
                 if isinstance(value, dict):
                     kwargs[arg] = immutable_dict(value)
-                if isinstance(value, (list, set)):
+                if isinstance(value, list):
                     kwargs[arg] = tuple(value)
+                if isinstance(value, set):
+                    kwargs[arg] = frozenset(value)
 
         def assign_instance_arguments():
             assign_default_values()
