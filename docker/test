@@ -1,0 +1,4 @@
+#!/bin/sh
+
+docker build -t simple-value-object:latest .
+docker run --rm -it simple-value-object:latest mamba --f documentation
