@@ -4,14 +4,15 @@ from mamba import (
     description,
     it
 )
+
 from simple_value_object import (
     ValueObject,
     invariant
 )
 from simple_value_object.exceptions import (
     CannotBeChanged,
-    InvariantMustReturnBool,
     ConstructorWithoutArguments,
+    InvariantMustReturnBool,
     InvariantViolation
 )
 

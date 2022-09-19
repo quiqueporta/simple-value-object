@@ -1,10 +1,10 @@
-import sys
 import inspect
+import sys
 
 from .exceptions import (
     CannotBeChanged,
-    InvariantMustReturnBool,
     ConstructorWithoutArguments,
+    InvariantMustReturnBool,
     InvariantViolation
 )
 
@@ -13,10 +13,10 @@ INVARIANT_NAME = 0
 INVARIANT_METHOD = 1
 
 
-class ValueObject(object):
+class ValueObject:
 
     def __new__(cls, *args, **kwargs):
-        self = super(ValueObject, cls).__new__(cls)
+        self = super().__new__(cls)
 
         args_spec = ArgsSpec(self.__init__)
 
@@ -118,7 +118,7 @@ class ValueObject(object):
         return hash(repr(self))
 
 
-class ArgsSpec(object):
+class ArgsSpec:
 
     def __init__(self, method):
         self.__argspec = inspect.getfullargspec(method)
