@@ -69,7 +69,10 @@ class ValueObject:
                 yield invariant
 
         def is_invariant(method):
-            return hasattr(method, '__call__') and method.__name__ == 'invariant_func_wrapper'
+            try:
+                return method.__name__ == 'invariant_func_wrapper'
+            except AttributeError:
+                return False
 
         def is_invariant_violated(invariant):
             invariant_result = invariant(self)
