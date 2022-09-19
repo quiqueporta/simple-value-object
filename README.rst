@@ -170,8 +170,8 @@ Test
     > $ docker/test
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-1.5.0-blue.svg
+.. |Version Number| image:: https://img.shields.io/badge/version-2.0.0-blue.svg
 
 .. |License MIT| image:: https://img.shields.io/github/license/quiqueporta/simple-value-object
 
-.. |Python Version| image:: https://img.shields.io/badge/python-3.6,_3.7,_3.8,_3.9,_3.10,-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-3.6,_3.7,_3.8,_3.9,_3.10-blue.svg
