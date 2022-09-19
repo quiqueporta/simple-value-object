@@ -1,7 +1,7 @@
 Value Object
 ============
 
-|Version Number| |Build Status| |Coverage Status| |Requirements Status| |Python Version| |License MIT|
+|Version Number| |Build Status| |Coverage Status| |Python Version| |License MIT|
 
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
@@ -176,10 +176,6 @@ Test
 
 .. |Coverage Status| image:: https://coveralls.io/repos/quiqueporta/simple-value-object/badge.svg?branch=master&service=github
   :target: https://coveralls.io/github/quiqueporta/simple-value-object?branch=master
-
-.. |Requirements Status| image:: https://requires.io/github/quiqueporta/simple-value-object/requirements.svg?branch=master
-     :target: https://requires.io/github/quiqueporta/simple-value-object/requirements/?branch=master
-          :alt: Requirements Status
 
 .. |License MIT| image:: https://img.shields.io/github/license/quiqueporta/simple-value-object
 
