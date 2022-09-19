@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.0.0 (2022-09-19)
+------------------
+
+- Changed exception from CannotBeChangeException to CannotBeChanged
+
 1.5.0 (2020-12-07)
 ------------------
 

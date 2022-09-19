@@ -5,9 +5,9 @@ class NotDeclaredArgsException(Exception):
         )
 
 
-class CannotBeChangeException(Exception):
+class CannotBeChanged(Exception):
     def __init__(self, *args, **kwargs):
-        super(CannotBeChangeException, self).__init__(
+        super().__init__(
             'You cannot change values from a Value Object, create a new one'
         )
 

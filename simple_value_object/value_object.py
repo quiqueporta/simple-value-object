@@ -2,7 +2,7 @@ import sys
 import inspect
 
 from .exceptions import (
-    CannotBeChangeException,
+    CannotBeChanged,
     InvariantReturnValueException,
     NotDeclaredArgsException,
     ViolatedInvariantException
@@ -95,7 +95,7 @@ class ValueObject(object):
         return self
 
     def __setattr__(self, name, value):
-        raise CannotBeChangeException()
+        raise CannotBeChanged()
 
     def __eq__(self, other):
         if other is None:
@@ -158,7 +158,7 @@ class immutable_dict(dict):
         return id(self)
 
     def _immutable(self, *args, **kwargs):
-        raise CannotBeChangeException()
+        raise CannotBeChanged()
 
     __setitem__ = _immutable
     __delitem__ = _immutable

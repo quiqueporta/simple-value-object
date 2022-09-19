@@ -9,7 +9,7 @@ from simple_value_object import (
     invariant
 )
 from simple_value_object.exceptions import (
-    CannotBeChangeException,
+    CannotBeChanged,
     InvariantReturnValueException,
     NotDeclaredArgsException,
     ViolatedInvariantException
@@ -65,7 +65,7 @@ with description('Value Object'):
                 a_point.x = 4
 
             expect(lambda: change_point()).to(
-                raise_error(CannotBeChangeException, 'You cannot change values from a Value Object, create a new one')
+                raise_error(CannotBeChanged, 'You cannot change values from a Value Object, create a new one')
             )
 
         with it('can set default values'):
@@ -131,46 +131,46 @@ with description('Value Object'):
                 another_value_object = AValueObject({'key': 'value'})
 
                 expect(lambda: a_value_object.a_dict.update({'key': 'another_value'})).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.update({'key': 'another_value'})).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 def remove_key():
                     del(a_value_object.a_dict['key'])
                     del(another_value_object.a_dict['key'])
                 expect(lambda: remove_key()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 def change_key():
                     a_value_object.a_dict['key'] = 'new_value'
                     another_value_object.a_dict['key'] = 'new_value'
                 expect(lambda: change_key()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.setdefault('key')).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.setdefault('key')).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
 
             with it('does not allow to change lists arguments'):
