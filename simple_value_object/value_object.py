@@ -4,8 +4,8 @@ import inspect
 from .exceptions import (
     CannotBeChanged,
     InvariantMustReturnBool,
-    NotDeclaredArgsException,
-    ViolatedInvariantException
+    ConstructorWithoutArguments,
+    InvariantViolation
 )
 
 MIN_NUMBER_ARGS = 1
@@ -24,7 +24,7 @@ class ValueObject(object):
             init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
 
             if init_constructor_without_arguments:
-                raise NotDeclaredArgsException()
+                raise ConstructorWithoutArguments()
 
         def replace_mutable_kwargs_with_immutable_types():
             for arg, value in kwargs.items():
@@ -62,11 +62,7 @@ class ValueObject(object):
         def check_invariants():
             for invariant in obtain_invariants():
                 if not invariant_execute(invariant[INVARIANT_METHOD]):
-                    raise ViolatedInvariantException(
-                        'Args violates invariant: {}'.format(
-                            invariant[INVARIANT_NAME]
-                        )
-                    )
+                    raise InvariantViolation(f'Invariant violation: {invariant[INVARIANT_NAME]}')
 
         def invariant_execute(invariant):
             return_value = invariant(self, self)
@@ -125,15 +121,8 @@ class ValueObject(object):
 class ArgsSpec(object):
 
     def __init__(self, method):
-        try:
-            if sys.version_info.major == 2:
-                self.__argspec = inspect.getargspec(method)
-                self.__varkw = self.__argspec.keywords
-            else:
-                self.__argspec = inspect.getfullargspec(method)
-                self.__varkw = self.__argspec.varkw
-        except TypeError:
-            raise NotDeclaredArgsException()
+        self.__argspec = inspect.getfullargspec(method)
+        self.__varkw = self.__argspec.varkw
 
     @property
     def args(self):

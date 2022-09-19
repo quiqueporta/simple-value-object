@@ -1,23 +1,19 @@
-class NotDeclaredArgsException(Exception):
-    def __init__(self, *args, **kwargs):
-        super(NotDeclaredArgsException, self).__init__(
-            'No arguments declared in __init__'
-        )
+class ConstructorWithoutArguments(Exception):
+    def __init__(self):
+        super().__init__('No arguments declared in __init__')
 
 
 class CannotBeChanged(Exception):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         super().__init__(
             'You cannot change values from a Value Object, create a new one'
         )
 
 
-class ViolatedInvariantException(Exception):
+class InvariantViolation(Exception):
     pass
 
 
 class InvariantMustReturnBool(Exception):
-    def __init__(self, *args, **kwargs):
-        super(InvariantMustReturnBool, self).__init__(
-            'Invariants must return a boolean value'
-        )
+    def __init__(self):
+        super().__init__('Invariants must return a boolean value')

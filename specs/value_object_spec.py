@@ -11,8 +11,8 @@ from simple_value_object import (
 from simple_value_object.exceptions import (
     CannotBeChanged,
     InvariantMustReturnBool,
-    NotDeclaredArgsException,
-    ViolatedInvariantException
+    ConstructorWithoutArguments,
+    InvariantViolation
 )
 
 
@@ -114,7 +114,7 @@ with description('Value Object'):
                     pass
 
                 expect(lambda: WithNoArgs()).to(
-                    raise_error(NotDeclaredArgsException, 'No arguments declared in __init__')
+                    raise_error(ConstructorWithoutArguments, 'No arguments declared in __init__')
                 )
 
             with it('must have number of values equal to number of args'):
@@ -223,11 +223,11 @@ with description('Value Object'):
 
 
             expect(lambda: AnotherPoint(-5, 3)).to(
-                raise_error(ViolatedInvariantException, 'Args violates invariant: inside_first_quadrant')
+                raise_error(InvariantViolation, 'Invariant violation: inside_first_quadrant')
             )
 
             expect(lambda: AnotherPoint(6, 3)).to(
-                raise_error(ViolatedInvariantException, 'Args violates invariant: x_less_than_y')
+                raise_error(InvariantViolation, 'Invariant violation: x_less_than_y')
             )
 
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):

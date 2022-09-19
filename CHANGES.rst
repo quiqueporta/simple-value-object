@@ -6,6 +6,8 @@ Changelog
 
 - Rename CannotBeChangeException to CannotBeChanged
 - Rename InvariantReturnValueException to InvariantMustReturnBool
+- Rename NotDeclaredArgsException to ConstructorWithoutArguments
+- Rename ViolatedInvariantException to InvariantViolation
 
 
 1.5.0 (2020-12-07)
