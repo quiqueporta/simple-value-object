@@ -43,7 +43,7 @@ Constructor and field readers
     # 2
 
     point.x = 5
-    # CannotBeChangeException: You cannot change values from a Value Object, create a new one
+    # CannotBeChanged: You cannot change values from a Value Object, create a new one
 
     class Date(ValueObject):
         def __init__(self, day, month, year):
@@ -61,7 +61,7 @@ Constructor and field readers
     # 2015
 
     date.month = 5
-    # CannotBeChangeException: You cannot change values from a Value Object, create a new one
+    # CannotBeChanged: You cannot change values from a Value Object, create a new one
 
 
 Equality based on field values
@@ -115,6 +115,8 @@ Hash code based on field values
 Invariants
 ~~~~~~~~~~
 
+Invariants **must** return a boolean value.
+
 .. code-block:: python
 
     from simple_value_object import ValueObject, invariant
@@ -125,18 +127,18 @@ Invariants
             pass
 
         @invariant
-        def inside_first_quadrant(cls, instance):
-            return instance.x > 0 and instance.y > 0
+        def inside_first_quadrant(self):
+            return self.x > 0 and self.y > 0
 
         @invariant
-        def x_less_than_y(cls, instance):
-            return instance.x < instance.y
+        def x_less_than_y(self):
+            return self.x < self.y
 
     Point(-5, 3)
-    #ViolatedInvariantException: Args violates invariant: inside_first_cuadrant
+    #InvariantViolation: inside_first_cuadrant
 
     Point(6, 3)
-    #ViolatedInvariantException: Args violates invariant: x_less_than_y
+    #InvariantViolation: x_less_than_y
 
     Point(1,3)
     #<__main__.Point at 0x7f2bd043c780>

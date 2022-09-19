@@ -8,6 +8,7 @@ Changelog
 - Rename InvariantReturnValueException to InvariantMustReturnBool
 - Rename NotDeclaredArgsException to ConstructorWithoutArguments
 - Rename ViolatedInvariantException to InvariantViolation
+- Simplifly invariants now receives `self` attribute only
 
 
 1.5.0 (2020-12-07)

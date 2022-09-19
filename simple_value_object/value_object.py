@@ -61,27 +61,24 @@ class ValueObject:
 
         def check_invariants():
             for invariant in obtain_invariants():
-                if not invariant_execute(invariant[INVARIANT_METHOD]):
-                    raise InvariantViolation(f'Invariant violation: {invariant[INVARIANT_NAME]}')
-
-        def invariant_execute(invariant):
-            return_value = invariant(self, self)
-
-            if not isinstance(return_value, bool):
-                raise InvariantMustReturnBool()
-
-            return return_value
-
-        def is_invariant(method):
-            try:
-                return 'invariant_func_wrapper' in str(method) and '__init__' not in str(method)
-            except TypeError:
-                return False
+                if is_invariant_violated(invariant):
+                    raise InvariantViolation(f'Invariant violation: {invariant.name}')
 
         def obtain_invariants():
-            invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_invariant)]
-            for invariant in invariants:
+            for invariant in filter(is_invariant, cls.__dict__.values()):
                 yield invariant
+
+        def is_invariant(method):
+            return hasattr(method, '__call__') and method.__name__ == 'invariant_func_wrapper'
+
+        def is_invariant_violated(invariant):
+            invariant_result = invariant(self)
+
+            if not isinstance(invariant_result, bool):
+                raise InvariantMustReturnBool()
+
+            return invariant_result is False
+
 
         check_class_initialization()
         replace_mutable_kwargs_with_immutable_types()

@@ -215,12 +215,12 @@ with description('Value Object'):
                     pass
 
                 @invariant
-                def inside_first_quadrant(cls, instance):
-                    return instance.x > 0 and instance.y > 0
+                def inside_first_quadrant(self):
+                    return self.x > 0 and self.y > 0
 
                 @invariant
-                def x_less_than_y(cls, instance):
-                    return instance.x < instance.y
+                def x_less_than_y(self):
+                    return self.x < self.y
 
 
             expect(lambda: AnotherPoint(-5, 3)).to(
@@ -238,7 +238,7 @@ with description('Value Object'):
                     pass
 
                 @invariant
-                def first_year_quarter(cls, instance):
+                def first_year_quarter(self):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantMustReturnBool))
