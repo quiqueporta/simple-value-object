@@ -22,4 +22,4 @@ jobs:
           pip install -r requirements-test.txt
       - name: Test with mamba
         run: |
-          PYTHONPATH=$PYTHONPATH:. mamba
+          PYTHONPATH=$PYTHONPATH:. mamba -f documentation
