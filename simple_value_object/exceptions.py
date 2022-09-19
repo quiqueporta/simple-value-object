@@ -16,8 +16,8 @@ class ViolatedInvariantException(Exception):
     pass
 
 
-class InvariantReturnValueException(Exception):
+class InvariantMustReturnBool(Exception):
     def __init__(self, *args, **kwargs):
-        super(InvariantReturnValueException, self).__init__(
+        super(InvariantMustReturnBool, self).__init__(
             'Invariants must return a boolean value'
         )

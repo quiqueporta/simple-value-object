@@ -10,7 +10,7 @@ from simple_value_object import (
 )
 from simple_value_object.exceptions import (
     CannotBeChanged,
-    InvariantReturnValueException,
+    InvariantMustReturnBool,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
@@ -240,4 +240,4 @@ with description('Value Object'):
                 def first_year_quarter(cls, instance):
                     return 0
 
-            expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
+            expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantMustReturnBool))

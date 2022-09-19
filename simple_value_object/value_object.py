@@ -3,7 +3,7 @@ import inspect
 
 from .exceptions import (
     CannotBeChanged,
-    InvariantReturnValueException,
+    InvariantMustReturnBool,
     NotDeclaredArgsException,
     ViolatedInvariantException
 )
@@ -72,7 +72,7 @@ class ValueObject(object):
             return_value = invariant(self, self)
 
             if not isinstance(return_value, bool):
-                raise InvariantReturnValueException()
+                raise InvariantMustReturnBool()
 
             return return_value
 
