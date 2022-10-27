@@ -4,15 +4,16 @@ from mamba import (
     description,
     it
 )
+
 from simple_value_object import (
     ValueObject,
     invariant
 )
 from simple_value_object.exceptions import (
-    CannotBeChangeException,
-    InvariantReturnValueException,
-    NotDeclaredArgsException,
-    ViolatedInvariantException
+    CannotBeChanged,
+    ConstructorWithoutArguments,
+    InvariantMustReturnBool,
+    InvariantViolation
 )
 
 
@@ -65,7 +66,7 @@ with description('Value Object'):
                 a_point.x = 4
 
             expect(lambda: change_point()).to(
-                raise_error(CannotBeChangeException, 'You cannot change values from a Value Object, create a new one')
+                raise_error(CannotBeChanged, 'You cannot change values from a Value Object, create a new one')
             )
 
         with it('can set default values'):
@@ -114,7 +115,7 @@ with description('Value Object'):
                     pass
 
                 expect(lambda: WithNoArgs()).to(
-                    raise_error(NotDeclaredArgsException, 'No arguments declared in __init__')
+                    raise_error(ConstructorWithoutArguments, 'No arguments declared in __init__')
                 )
 
             with it('must have number of values equal to number of args'):
@@ -131,46 +132,46 @@ with description('Value Object'):
                 another_value_object = AValueObject({'key': 'value'})
 
                 expect(lambda: a_value_object.a_dict.update({'key': 'another_value'})).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.update({'key': 'another_value'})).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 def remove_key():
                     del(a_value_object.a_dict['key'])
                     del(another_value_object.a_dict['key'])
                 expect(lambda: remove_key()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 def change_key():
                     a_value_object.a_dict['key'] = 'new_value'
                     another_value_object.a_dict['key'] = 'new_value'
                 expect(lambda: change_key()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: a_value_object.a_dict.setdefault('key')).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
                 expect(lambda: another_value_object.a_dict.setdefault('key')).to(
-                    raise_error(CannotBeChangeException)
+                    raise_error(CannotBeChanged)
                 )
 
             with it('does not allow to change lists arguments'):
@@ -214,20 +215,20 @@ with description('Value Object'):
                     pass
 
                 @invariant
-                def inside_first_quadrant(cls, instance):
-                    return instance.x > 0 and instance.y > 0
+                def inside_first_quadrant(self):
+                    return self.x > 0 and self.y > 0
 
                 @invariant
-                def x_less_than_y(cls, instance):
-                    return instance.x < instance.y
+                def x_less_than_y(self):
+                    return self.x < self.y
 
 
             expect(lambda: AnotherPoint(-5, 3)).to(
-                raise_error(ViolatedInvariantException, 'Args violates invariant: inside_first_quadrant')
+                raise_error(InvariantViolation, 'Invariant violation: inside_first_quadrant')
             )
 
             expect(lambda: AnotherPoint(6, 3)).to(
-                raise_error(ViolatedInvariantException, 'Args violates invariant: x_less_than_y')
+                raise_error(InvariantViolation, 'Invariant violation: x_less_than_y')
             )
 
         with it('raises an exception when a declared invariant doesnt returns a boolean value'):
@@ -237,7 +238,7 @@ with description('Value Object'):
                     pass
 
                 @invariant
-                def first_year_quarter(cls, instance):
+                def first_year_quarter(self):
                     return 0
 
-            expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantReturnValueException))
+            expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantMustReturnBool))

@@ -9,7 +9,7 @@ setup(
     license='MIT/X11',
     author='Quique Porta',
     author_email='quiqueporta@gmail.com',
-    description='A simple mixin for create Value Objects',
+    description='A simple mixin to create Value Objects',
     long_description=open('README.rst').read(),
     url='https://github.com/quiqueporta/value-object',
     download_url='https://github.com/quiqueporta/simple-value-object/releases',

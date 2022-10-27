@@ -1,4 +1,0 @@
-[run]
-source = ./simple_value_object/
-omit = ./simple_value_object/__init__.py
-branch = True

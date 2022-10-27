@@ -1,11 +1,11 @@
-import sys
 import inspect
+import sys
 
 from .exceptions import (
-    CannotBeChangeException,
-    InvariantReturnValueException,
-    NotDeclaredArgsException,
-    ViolatedInvariantException
+    CannotBeChanged,
+    ConstructorWithoutArguments,
+    InvariantMustReturnBool,
+    InvariantViolation
 )
 
 MIN_NUMBER_ARGS = 1
@@ -13,10 +13,10 @@ INVARIANT_NAME = 0
 INVARIANT_METHOD = 1
 
 
-class ValueObject(object):
+class ValueObject:
 
     def __new__(cls, *args, **kwargs):
-        self = super(ValueObject, cls).__new__(cls)
+        self = super().__new__(cls)
 
         args_spec = ArgsSpec(self.__init__)
 
@@ -24,7 +24,7 @@ class ValueObject(object):
             init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
 
             if init_constructor_without_arguments:
-                raise NotDeclaredArgsException()
+                raise ConstructorWithoutArguments()
 
         def replace_mutable_kwargs_with_immutable_types():
             for arg, value in kwargs.items():
@@ -61,31 +61,27 @@ class ValueObject(object):
 
         def check_invariants():
             for invariant in obtain_invariants():
-                if not invariant_execute(invariant[INVARIANT_METHOD]):
-                    raise ViolatedInvariantException(
-                        'Args violates invariant: {}'.format(
-                            invariant[INVARIANT_NAME]
-                        )
-                    )
+                if is_invariant_violated(invariant):
+                    raise InvariantViolation(f'Invariant violation: {invariant.name}')
 
-        def invariant_execute(invariant):
-            return_value = invariant(self, self)
-
-            if not isinstance(return_value, bool):
-                raise InvariantReturnValueException()
-
-            return return_value
+        def obtain_invariants():
+            for invariant in filter(is_invariant, cls.__dict__.values()):
+                yield invariant
 
         def is_invariant(method):
             try:
-                return 'invariant_func_wrapper' in str(method) and '__init__' not in str(method)
-            except TypeError:
+                return method.__name__ == 'invariant_func_wrapper'
+            except AttributeError:
                 return False
 
-        def obtain_invariants():
-            invariants = [(member[INVARIANT_NAME], member[INVARIANT_METHOD]) for member in inspect.getmembers(cls, is_invariant)]
-            for invariant in invariants:
-                yield invariant
+        def is_invariant_violated(invariant):
+            invariant_result = invariant(self)
+
+            if not isinstance(invariant_result, bool):
+                raise InvariantMustReturnBool()
+
+            return invariant_result is False
+
 
         check_class_initialization()
         replace_mutable_kwargs_with_immutable_types()
@@ -95,7 +91,7 @@ class ValueObject(object):
         return self
 
     def __setattr__(self, name, value):
-        raise CannotBeChangeException()
+        raise CannotBeChanged()
 
     def __eq__(self, other):
         if other is None:
@@ -122,18 +118,11 @@ class ValueObject(object):
         return hash(repr(self))
 
 
-class ArgsSpec(object):
+class ArgsSpec:
 
     def __init__(self, method):
-        try:
-            if sys.version_info.major == 2:
-                self.__argspec = inspect.getargspec(method)
-                self.__varkw = self.__argspec.keywords
-            else:
-                self.__argspec = inspect.getfullargspec(method)
-                self.__varkw = self.__argspec.varkw
-        except TypeError:
-            raise NotDeclaredArgsException()
+        self.__argspec = inspect.getfullargspec(method)
+        self.__varkw = self.__argspec.varkw
 
     @property
     def args(self):
@@ -158,7 +147,7 @@ class immutable_dict(dict):
         return id(self)
 
     def _immutable(self, *args, **kwargs):
-        raise CannotBeChangeException()
+        raise CannotBeChanged()
 
     __setitem__ = _immutable
     __delitem__ = _immutable

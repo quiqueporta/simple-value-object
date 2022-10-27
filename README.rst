@@ -1,7 +1,7 @@
 Value Object
 ============
 
-|Version Number| |Build Status| |Coverage Status| |Python Version| |License MIT|
+|Version Number| |Python Version| |License MIT|
 
 
 Based on Ruby Gem by NoFlopSquad (https://github.com/noflopsquad/value-object)
@@ -43,7 +43,7 @@ Constructor and field readers
     # 2
 
     point.x = 5
-    # CannotBeChangeException: You cannot change values from a Value Object, create a new one
+    # CannotBeChanged: You cannot change values from a Value Object, create a new one
 
     class Date(ValueObject):
         def __init__(self, day, month, year):
@@ -61,7 +61,7 @@ Constructor and field readers
     # 2015
 
     date.month = 5
-    # CannotBeChangeException: You cannot change values from a Value Object, create a new one
+    # CannotBeChanged: You cannot change values from a Value Object, create a new one
 
 
 Equality based on field values
@@ -115,6 +115,8 @@ Hash code based on field values
 Invariants
 ~~~~~~~~~~
 
+Invariants **must** return a boolean value.
+
 .. code-block:: python
 
     from simple_value_object import ValueObject, invariant
@@ -125,18 +127,18 @@ Invariants
             pass
 
         @invariant
-        def inside_first_quadrant(cls, instance):
-            return instance.x > 0 and instance.y > 0
+        def inside_first_quadrant(self):
+            return self.x > 0 and self.y > 0
 
         @invariant
-        def x_less_than_y(cls, instance):
-            return instance.x < instance.y
+        def x_less_than_y(self):
+            return self.x < self.y
 
     Point(-5, 3)
-    #ViolatedInvariantException: Args violates invariant: inside_first_cuadrant
+    #InvariantViolation: inside_first_cuadrant
 
     Point(6, 3)
-    #ViolatedInvariantException: Args violates invariant: x_less_than_y
+    #InvariantViolation: x_less_than_y
 
     Point(1,3)
     #<__main__.Point at 0x7f2bd043c780>
@@ -165,18 +167,11 @@ Test
 
 .. code-block:: sh
 
-    > pip install -r requirements-test.txt
-    > PYTHONPATH=$PYTHONPATH:. mamba
+    > $ docker/test
 
 
-.. |Version Number| image:: https://img.shields.io/badge/version-1.5.0-blue.svg
-
-.. |Build Status| image:: https://travis-ci.org/quiqueporta/simple-value-object.svg?branch=master
-    :target: https://travis-ci.org/quiqueporta/simple-value-object
-
-.. |Coverage Status| image:: https://coveralls.io/repos/quiqueporta/simple-value-object/badge.svg?branch=master&service=github
-  :target: https://coveralls.io/github/quiqueporta/simple-value-object?branch=master
+.. |Version Number| image:: https://img.shields.io/badge/version-2.0.0-blue.svg
 
 .. |License MIT| image:: https://img.shields.io/github/license/quiqueporta/simple-value-object
 
-.. |Python Version| image:: https://img.shields.io/badge/python-3.4,_3.5,_3.6,_3.7-blue.svg
+.. |Python Version| image:: https://img.shields.io/badge/python-3.6,_3.7,_3.8,_3.9,_3.10-blue.svg
