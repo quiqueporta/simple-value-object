@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.0 (2022-09-19)
+2.0.0 (2022-10-27)
 ------------------
 
 - Rename CannotBeChangeException to CannotBeChanged
@@ -9,6 +9,7 @@ Changelog
 - Rename NotDeclaredArgsException to ConstructorWithoutArguments
 - Rename ViolatedInvariantException to InvariantViolation
 - Simplifly invariants now receives `self` attribute only
+- Fix replace_mutable_kwargs_with_immutable_types for `set` kwargs
 
 
 1.5.0 (2020-12-07)
