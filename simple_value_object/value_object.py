@@ -1,150 +1,99 @@
 import inspect
+import hashlib
 import sys
+from dataclasses import dataclass
 
 from .exceptions import (
     CannotBeChanged,
-    ConstructorWithoutArguments,
     InvariantMustReturnBool,
-    InvariantViolation
+    InvariantViolation,
 )
-
-MIN_NUMBER_ARGS = 1
-INVARIANT_NAME = 0
-INVARIANT_METHOD = 1
 
 
 class ValueObject:
+    def __init_subclass__(cls):
+        cls = dataclass(cls)
 
-    def __new__(cls, *args, **kwargs):
-        self = super().__new__(cls)
+    def __post_init__(self):
+        self.__replace_mutable_fields_with_immutable()
+        self.__check_invariants()
 
-        args_spec = ArgsSpec(self.__init__)
+    @property
+    def hash(self):
+        return int(self.__calculate_hash(), 16)
 
-        def check_class_initialization():
-            init_constructor_without_arguments = len(args_spec.args) <= MIN_NUMBER_ARGS
-
-            if init_constructor_without_arguments:
-                raise ConstructorWithoutArguments()
-
-        def replace_mutable_kwargs_with_immutable_types():
-            for arg, value in kwargs.items():
-                if isinstance(value, dict):
-                    kwargs[arg] = immutable_dict(value)
-                if isinstance(value, list):
-                    kwargs[arg] = tuple(value)
-                if isinstance(value, set):
-                    kwargs[arg] = frozenset(value)
-
-        def assign_instance_arguments():
-            assign_default_values()
-            override_default_values_with_args()
-
-        def assign_default_values():
-            defaults = () if not args_spec.defaults else args_spec.defaults
-            self.__dict__.update(
-                dict(zip(args_spec.args[:0:-1], defaults[::-1]))
+    def __replace_mutable_fields_with_immutable(self):
+        mutable_types = {
+            dict: immutable_dict,
+            list: immutable_list,
+            set: immutable_set,
+        }
+        for field in self.__get_mutable_fields():
+            setattr(
+                self,
+                field.name,
+                mutable_types[field.type](getattr(self, field.name)),
             )
 
-        def override_default_values_with_args():
-            sanitized_args = []
-            for arg in args:
-                if isinstance(arg, dict):
-                    sanitized_args.append(immutable_dict(arg))
-                elif isinstance(arg, (list, set)):
-                    sanitized_args.append(tuple(arg))
-                else:
-                    sanitized_args.append(arg)
+    def __get_mutable_fields(self):
+        return filter(
+            lambda field: field.type in (dict, list, set),
+            self.__dataclass_fields__.values(),
+        )
 
-            self.__dict__.update(
-                dict(list(zip(args_spec.args[1:], sanitized_args)) + list(kwargs.items()))
-            )
+    def __check_invariants(self):
+        for invariant in self.__obtain_invariants():
+            if self.__is_invariant_violated(invariant):
+                raise InvariantViolation(f"Invariant violation: {invariant.name}")
 
-        def check_invariants():
-            for invariant in obtain_invariants():
-                if is_invariant_violated(invariant):
-                    raise InvariantViolation(f'Invariant violation: {invariant.name}')
+    def __obtain_invariants(self):
+        invariant_methods = [
+            method
+            for method in dir(self)
+            if callable(getattr(self, method))
+            and hasattr(getattr(self, method), "_invariant")
+        ]
+        for invariant in invariant_methods:
+            yield getattr(self, invariant)
 
-        def obtain_invariants():
-            for invariant in filter(is_invariant, cls.__dict__.values()):
-                yield invariant
+    def __is_invariant_violated(self, invariant):
+        invariant_result = invariant()
 
-        def is_invariant(method):
-            try:
-                return method.__name__ == 'invariant_func_wrapper'
-            except AttributeError:
-                return False
+        if not isinstance(invariant_result, bool):
+            raise InvariantMustReturnBool()
 
-        def is_invariant_violated(invariant):
-            invariant_result = invariant(self)
+        return invariant_result is False
 
-            if not isinstance(invariant_result, bool):
-                raise InvariantMustReturnBool()
+    def __calculate_hash(self):
+        hash_content = "".join(str(value) for value in self.__dict__.values())
+        return hashlib.sha256(hash_content.encode()).hexdigest()
 
-            return invariant_result is False
+    def __hash__(self):
+        return self.hash
 
+    def __setattr__(self, key, value):
+        if type(value) in (immutable_dict, immutable_list, immutable_set):
+            super().__setattr__(key, value)
+            return
 
-        check_class_initialization()
-        replace_mutable_kwargs_with_immutable_types()
-        assign_instance_arguments()
-        check_invariants()
+        default_value = getattr(self.__class__, key, None)
+        if hasattr(self, key) and getattr(self, key) != default_value:
+            raise CannotBeChanged()
 
-        return self
-
-    def __setattr__(self, name, value):
-        raise CannotBeChanged()
-
-    def __eq__(self, other):
-        if other is None:
-            return False
-        return self.__dict__ == other.__dict__
-
-    def __ne__(self, other):
-        return self.__dict__ != other.__dict__
+        super().__setattr__(key, value)
 
     def __str__(self):
         return repr(self)
 
     def __repr__(self):
-        args_spec = ArgsSpec(self.__init__)
-        args_values = ["{}={}".format(arg, getattr(self, arg)) for arg in args_spec.args[1:]]
-
-        return "{}({})".format(self.__class__.__name__, ", ".join(args_values))
-
-    def __hash__(self):
-        return self.hash
-
-    @property
-    def hash(self):
-        return hash(repr(self))
-
-
-class ArgsSpec:
-
-    def __init__(self, method):
-        self.__argspec = inspect.getfullargspec(method)
-        self.__varkw = self.__argspec.varkw
-
-    @property
-    def args(self):
-        return self.__argspec.args
-
-    @property
-    def varargs(self):
-        return self.__argspec.varargs
-
-    @property
-    def keywords(self):
-        return self.__varkw
-
-    @property
-    def defaults(self):
-        return self.__argspec.defaults
+        class_name = self.__class__.__name__.split(".")[-1]
+        attribute_str = ", ".join(
+            f"{key}={value}" for key, value in self.__dict__.items()
+        )
+        return f"{class_name}({attribute_str})"
 
 
 class immutable_dict(dict):
-
-    def __hash__(self):
-        return id(self)
 
     def _immutable(self, *args, **kwargs):
         raise CannotBeChanged()
@@ -156,3 +105,36 @@ class immutable_dict(dict):
     setdefault = _immutable
     pop = _immutable
     popitem = _immutable
+
+
+class immutable_list(list):
+
+    def _immutable(self, *args, **kwargs):
+        raise CannotBeChanged()
+
+    __setitem__ = _immutable
+    __delitem__ = _immutable
+    append = _immutable
+    extend = _immutable
+    insert = _immutable
+    pop = _immutable
+    remove = _immutable
+    clear = _immutable
+    reverse = _immutable
+    sort = _immutable
+
+
+class immutable_set(set):
+
+    def _immutable(self, *args, **kwargs):
+        raise CannotBeChanged()
+
+    add = _immutable
+    clear = _immutable
+    difference_update = _immutable
+    discard = _immutable
+    intersection_update = _immutable
+    pop = _immutable
+    remove = _immutable
+    symmetric_difference_update = _immutable
+    update = _immutable

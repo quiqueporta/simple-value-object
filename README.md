@@ -1,6 +1,6 @@
 # Value Object
 
-![Version number](https://img.shields.io/badge/version-3.0.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.6,_3.7,_3.8,_3.9,_3.10-blue.svg)
+![Version number](https://img.shields.io/badge/version-3.0.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
 
 Based on Ruby Gem by [NoFlopSquad](https://github.com/noflopsquad/value-object)
 
@@ -8,6 +8,13 @@ A **value object** is a small object that represents a simple entity whose equal
 i.e. two value objects are equal when they have the same value, not necessarily being the same object.
 
 [Wikipedia](http://en.wikipedia.org/wiki/Value_object)
+
+## New version 3.0
+
+This new version is a complete rewrite of the library, now it uses **dataclasses** to define the value objects.
+With this change we can use **type hints** to define the fields and the library will take care of the rest.
+Now you have autocomplete and **type checking** in your IDE. With the previous version you had not autocomplete nor type checking.
+You should be able to use this library with any version of python **3.7 or higher**.
 
 ## Installation
 
@@ -23,8 +30,8 @@ pip install simple-value-object
 from simple_value_object import ValueObject
 
 class Point(ValueObject):
-    def __init__(self, x, y):
-        pass
+    x: int
+    y: int
 
 point = Point(1, 2)
 
@@ -38,8 +45,9 @@ point.x = 5
 # CannotBeChanged: You cannot change values from a Value Object, create a new one
 
 class Date(ValueObject):
-    def __init__(self, day, month, year):
-        pass
+    day: int
+    month: int
+    year: int
 
 date = Date(1, 10, 2015)
 
@@ -62,8 +70,9 @@ date.month = 5
 from simple_value_object import ValueObject
 
 class Point(ValueObject):
-    def __init__(self, x, y):
-        pass
+    x: int
+    y: int
+
 
 a_point = Point(5, 3)
 
@@ -84,8 +93,8 @@ a_point == a_different_point
 from simple_value_object import ValueObject
 
 class Point(ValueObject):
-    def __init__(self, x, y):
-        pass
+    x: int
+    y: int
 
 a_point = Point(5, 3)
 
@@ -108,23 +117,22 @@ Invariants **must** return a boolean value.
 from simple_value_object import ValueObject, invariant
 
 class Point(ValueObject):
-
-    def __init__(self, x, y):
-        pass
+    x: int
+    y: int
 
     @invariant
     def inside_first_quadrant(self):
         return self.x > 0 and self.y > 0
 
     @invariant
-    def x_less_than_y(self):
+    def x_lower_than_y(self):
         return self.x < self.y
 
 Point(-5, 3)
 #InvariantViolation: inside_first_cuadrant
 
 Point(6, 3)
-#InvariantViolation: x_less_than_y
+#InvariantViolation: x_lower_than_y
 
 Point(1,3)
 #<__main__.Point at 0x7f2bd043c780>
@@ -135,15 +143,14 @@ Point(1,3)
 ```python
 from simple_value_object import ValueObject, invariant
 
-class Money(ValueObject):
-    def __init__(self, amount, currency):
-        pass
-
 class Currency(ValueObject):
-    def __init__(self, symbol):
-        pass
+    symbol: str
 
-Money(amount=100, currency=Currency(symbol="€"))
+class Money(ValueObject):
+    amount: Decimal
+    currency: Currency
+
+Money(amount=Decimal("100"), currency=Currency(symbol="€"))
 ```
 
 ## Tests
