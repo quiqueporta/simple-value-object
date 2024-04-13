@@ -11,10 +11,10 @@ i.e. two value objects are equal when they have the same value, not necessarily 
 
 ## New version 3.0
 
-This new version is a complete rewrite of the library, now it uses **dataclasses** to define the value objects.
-With this change we can use **type hints** to define the fields and the library will take care of the rest.
-Now you have autocomplete and **type checking** in your IDE. With the previous version you had not autocomplete nor type checking.
-You should be able to use this library with any version of python **3.7 or higher**.
+This new version is a complete rewrite of the library, now it uses data classes to define the value objects.
+With this change we can use type hints to define the fields and the library will take care of the rest.
+Now you have autocomplete and type checking in your IDE. With the previous version, you did no autocomplete or type-checking.
+You should be able to use this library with any version of Python 3.7 or higher.
 
 ## Installation
 
