@@ -252,3 +252,22 @@ with description("Value Object"):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantMustReturnBool))
+
+    with context("ensures that defined data types are respected"):
+
+        with it("raises an exception when a field is not the expected type"):
+            expect(lambda: Point("5", 3)).to(
+                raise_error(TypeError, "x must be of type <class 'int'>")
+            )
+            expect(lambda: Point(5, "3")).to(
+                raise_error(TypeError, "y must be of type <class 'int'>")
+            )
+        with it(
+            "raises an exception when a inner value object is not the expected type"
+        ):
+            expect(lambda: Money(Decimal("100"), "€")).to(
+                raise_error(
+                    TypeError,
+                    "currency must be of type <class 'specs/value_object_spec.Currency'>",
+                )
+            )

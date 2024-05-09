@@ -13,6 +13,7 @@ class ValueObject:
         cls = dataclass(cls)
 
     def __post_init__(self):
+        self.__check_annotations()
         self.__replace_mutable_fields_with_immutable()
         self.__check_invariants()
 
@@ -38,6 +39,15 @@ class ValueObject:
             lambda field: field.type in (dict, list, set),
             self.__dataclass_fields__.values(),
         )
+
+    def __check_annotations(self):
+        for field in self.__dataclass_fields__.values():
+            if not isinstance(
+                getattr(self, field.name), self.__annotations__[field.name]
+            ):
+                raise TypeError(
+                    f"{field.name} must be of type {self.__annotations__[field.name]}"
+                )
 
     def __check_invariants(self):
         for invariant in self.__obtain_invariants():
