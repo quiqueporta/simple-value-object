@@ -1,7 +1,7 @@
 from .value_object import ValueObject
 from .decorators import invariant
 
-VERSION = (3, 0, 0, "final")
+VERSION = (3, 0, 1, "final")
 __version__ = VERSION
 
 

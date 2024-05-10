@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1 (2024-05-10)
+
+- Remove unused imports
+
 ## 3.0.0 (2024-04-13)
 
 - Use python dataclass to create ValueObject

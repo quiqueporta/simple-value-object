@@ -1,6 +1,6 @@
 # Value Object
 
-![Version number](https://img.shields.io/badge/version-3.0.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
+![Version number](https://img.shields.io/badge/version-3.0.1-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
 
 Based on Ruby Gem by [NoFlopSquad](https://github.com/noflopsquad/value-object)
 
@@ -9,7 +9,7 @@ i.e. two value objects are equal when they have the same value, not necessarily 
 
 [Wikipedia](http://en.wikipedia.org/wiki/Value_object)
 
-## New version 3.0
+## New version 3.x
 
 This new version is a complete rewrite of the library, now it uses data classes to define the value objects.
 With this change we can use type hints to define the fields and the library will take care of the rest.
