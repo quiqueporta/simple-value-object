@@ -239,7 +239,7 @@ with description("Value Object"):
             )
 
         with it(
-            "raises an exception when a declared invariant doesnt returns a boolean value"
+            "raises an exception when a declared invariant does not return a boolean value"
         ):
 
             class Date(ValueObject):
@@ -252,3 +252,35 @@ with description("Value Object"):
                     return 0
 
             expect(lambda: Date(8, 6, 2002)).to(raise_error(InvariantMustReturnBool))
+
+    with context("custom invariant exceptions"):
+
+        with it("raises a custom exception"):
+
+            class MyCustomException(Exception):
+                pass
+
+            class Foo(ValueObject):
+                any: str
+
+                @invariant(exception_type=MyCustomException)
+                def bar(self):
+                    return False
+
+            expect(lambda: Foo("buzz")).to(raise_error(MyCustomException))
+
+        with it("can return a custome message for the exception"):
+
+            class MyCustomException(Exception):
+                pass
+
+            class Foo(ValueObject):
+                any: str
+
+                @invariant(exception_type=MyCustomException)
+                def bar(self):
+                    return False, "This is a custom message"
+
+            expect(lambda: Foo("buzz")).to(
+                raise_error(MyCustomException, "This is a custom message")
+            )
