@@ -156,7 +156,7 @@ class Point(ValueObject):
     x: int
     y: int
 
-    @invariant(MyException)
+    @invariant(exception_type=MyException)
     def inside_first_quadrant(self):
         return self.x > 0 and self.y > 0, "You must be inside the first quadrant"
 

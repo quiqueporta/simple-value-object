@@ -265,7 +265,7 @@ with description("Value Object"):
 
                 @invariant(exception_type=MyCustomException)
                 def bar(self):
-                    return False
+                    return self.any == "foo"
 
             expect(lambda: Foo("buzz")).to(raise_error(MyCustomException))
 
@@ -279,7 +279,7 @@ with description("Value Object"):
 
                 @invariant(exception_type=MyCustomException)
                 def bar(self):
-                    return False, "This is a custom message"
+                    return self.any == "foo", "This is a custom message"
 
             expect(lambda: Foo("buzz")).to(
                 raise_error(MyCustomException, "This is a custom message")
