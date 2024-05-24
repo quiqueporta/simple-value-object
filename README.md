@@ -1,6 +1,6 @@
 # Value Object
 
-![Version number](https://img.shields.io/badge/version-3.0.1-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
+![Version number](https://img.shields.io/badge/version-3.1.1-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
 
 Based on Ruby Gem by [NoFlopSquad](https://github.com/noflopsquad/value-object)
 
@@ -136,6 +136,32 @@ Point(6, 3)
 
 Point(1,3)
 #<__main__.Point at 0x7f2bd043c780>
+
+```
+
+#### Custom exceptions for invariants
+
+You can throw custom exceptions when an invariant is violated and also return the message of
+the exception that will be raised.
+
+```python
+
+from simple_value_object import ValueObject, invariant
+
+class MyException(Exception):
+    pass
+
+
+class Point(ValueObject):
+    x: int
+    y: int
+
+    @invariant(MyException)
+    def inside_first_quadrant(self):
+        return self.x > 0 and self.y > 0, "You must be inside the first quadrant"
+
+Point(-5, 3)
+#MyException: "You must be inside the first quadrant"
 ```
 
 ### ValueObject within ValueObject

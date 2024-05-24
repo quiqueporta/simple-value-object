@@ -41,8 +41,7 @@ class ValueObject:
 
     def __check_invariants(self):
         for invariant in self.__obtain_invariants():
-            if self.__is_invariant_violated(invariant):
-                raise InvariantViolation(f"Invariant violation: {invariant.name}")
+            invariant()
 
     def __obtain_invariants(self):
         invariant_methods = [
@@ -53,14 +52,6 @@ class ValueObject:
         ]
         for invariant in invariant_methods:
             yield getattr(self, invariant)
-
-    def __is_invariant_violated(self, invariant):
-        invariant_result = invariant()
-
-        if not isinstance(invariant_result, bool):
-            raise InvariantMustReturnBool()
-
-        return invariant_result is False
 
     def __calculate_hash(self):
         hash_content = "".join(str(value) for value in self.__dict__.values())

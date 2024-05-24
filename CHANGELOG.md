@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.1 (2024-05-10)
+
+- Add customs exceptions for invariants
+
 ## 3.0.1 (2024-05-10)
 
 - Remove unused imports
