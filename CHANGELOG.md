@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.0 (2024-05-25)
+
+- Fix hash for value objects.
+- Remove the CannotBeChanged exception. It is not necessary anymore.
+
 ## 3.2.0 (2024-05-25)
 
 - Fix custom exceptions to allow to pass them as no kwargs

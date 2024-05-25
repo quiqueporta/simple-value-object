@@ -1,3 +1,4 @@
+from dataclasses import FrozenInstanceError
 from expects import *
 from decimal import Decimal
 from mamba import context, description, it
@@ -5,7 +6,6 @@ from mamba import context, description, it
 from simple_value_object import ValueObject, invariant
 
 from simple_value_object.exceptions import (
-    CannotBeChanged,
     InvariantViolation,
     InvariantMustReturnBool,
 )
@@ -79,8 +79,8 @@ with description("Value Object"):
             same_point = Point(5, 3)
             different_point = Point(6, 3)
 
-            expect(a_point.hash).to(equal(same_point.hash))
-            expect(a_point.hash).not_to(equal(different_point.hash))
+            expect(hash(a_point)).to(equal(hash(same_point)))
+            expect(hash(a_point)).not_to(equal(hash(different_point)))
 
         with it("values can not be changed"):
             a_point = Point(5, 3)
@@ -90,8 +90,8 @@ with description("Value Object"):
 
             expect(lambda: change_point()).to(
                 raise_error(
-                    CannotBeChanged,
-                    "You cannot change values from a Value Object, create a new one",
+                    FrozenInstanceError,
+                    "cannot assign to field 'x'",
                 )
             )
 
@@ -115,7 +115,7 @@ with description("Value Object"):
             a_money = Money(Decimal("100"), Currency("€"))
 
             another_money = Money(Decimal("100"), Currency("€"))
-            expect(a_money.hash).to(equal(another_money.hash))
+            expect(hash(a_money)).to(equal(hash(another_money)))
 
         with it("provides a representation"):
 
@@ -174,45 +174,45 @@ with description("Value Object"):
 
                 expect(
                     lambda: a_value_object.a_dict.update({"key": "another_value"})
-                ).to(raise_error(CannotBeChanged))
+                ).to(raise_error(FrozenInstanceError))
                 expect(
                     lambda: another_value_object.a_dict.update({"key": "another_value"})
-                ).to(raise_error(CannotBeChanged))
+                ).to(raise_error(FrozenInstanceError))
                 expect(lambda: a_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: another_value_object.a_dict.clear()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
 
                 def remove_key():
                     del a_value_object.a_dict["key"]
                     del another_value_object.a_dict["key"]
 
-                expect(lambda: remove_key()).to(raise_error(CannotBeChanged))
+                expect(lambda: remove_key()).to(raise_error(FrozenInstanceError))
 
                 def change_key():
                     a_value_object.a_dict["key"] = "new_value"
                     another_value_object.a_dict["key"] = "new_value"
 
-                expect(lambda: change_key()).to(raise_error(CannotBeChanged))
+                expect(lambda: change_key()).to(raise_error(FrozenInstanceError))
                 expect(lambda: a_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: another_value_object.a_dict.pop()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: a_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: another_value_object.a_dict.popitem()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: a_value_object.a_dict.setdefault("key")).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: another_value_object.a_dict.setdefault("key")).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
 
             with it("does not allow to change lists arguments"):
@@ -224,18 +224,18 @@ with description("Value Object"):
                     a_value_object.a_list[0] = 4
                     another_value_object.a_list[0] = 4
 
-                expect(lambda: change_list_item()).to(raise_error(CannotBeChanged))
+                expect(lambda: change_list_item()).to(raise_error(FrozenInstanceError))
 
                 def delete_list_item():
                     del a_value_object.a_list[0]
                     del another_value_object.a_list[0]
 
-                expect(lambda: delete_list_item()).to(raise_error(CannotBeChanged))
+                expect(lambda: delete_list_item()).to(raise_error(FrozenInstanceError))
                 expect(lambda: a_value_object.a_list.clear()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
                 expect(lambda: another_value_object.a_list.clear()).to(
-                    raise_error(CannotBeChanged)
+                    raise_error(FrozenInstanceError)
                 )
 
             with it("does not allow to change set arguments"):
@@ -247,7 +247,7 @@ with description("Value Object"):
                     a_value_object.a_set.clear()
                     another_value_object.a_set.clear()
 
-                expect(lambda: change_list_item()).to(raise_error(CannotBeChanged))
+                expect(lambda: change_list_item()).to(raise_error(FrozenInstanceError))
 
     with context("forcing invariants"):
 

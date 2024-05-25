@@ -1,16 +1,10 @@
 import hashlib
-from dataclasses import dataclass
-
-from .exceptions import (
-    CannotBeChanged,
-    InvariantMustReturnBool,
-    InvariantViolation,
-)
+from dataclasses import dataclass, FrozenInstanceError
 
 
 class ValueObject:
     def __init_subclass__(cls):
-        cls = dataclass(cls)
+        cls = dataclass(cls, frozen=True)
 
     def __post_init__(self):
         self.__replace_mutable_fields_with_immutable()
@@ -27,7 +21,7 @@ class ValueObject:
             set: immutable_set,
         }
         for field in self.__get_mutable_fields():
-            setattr(
+            object.__setattr__(
                 self,
                 field.name,
                 mutable_types[field.type](getattr(self, field.name)),
@@ -60,17 +54,6 @@ class ValueObject:
     def __hash__(self):
         return self.hash
 
-    def __setattr__(self, key, value):
-        if type(value) in (immutable_dict, immutable_list, immutable_set):
-            super().__setattr__(key, value)
-            return
-
-        default_value = getattr(self.__class__, key, None)
-        if hasattr(self, key) and getattr(self, key) != default_value:
-            raise CannotBeChanged()
-
-        super().__setattr__(key, value)
-
     def __str__(self):
         return repr(self)
 
@@ -85,7 +68,7 @@ class ValueObject:
 class immutable_dict(dict):
 
     def _immutable(self, *args, **kwargs):
-        raise CannotBeChanged()
+        raise FrozenInstanceError()
 
     __setitem__ = _immutable
     __delitem__ = _immutable
@@ -99,7 +82,7 @@ class immutable_dict(dict):
 class immutable_list(list):
 
     def _immutable(self, *args, **kwargs):
-        raise CannotBeChanged()
+        raise FrozenInstanceError()
 
     __setitem__ = _immutable
     __delitem__ = _immutable
@@ -116,7 +99,7 @@ class immutable_list(list):
 class immutable_set(set):
 
     def _immutable(self, *args, **kwargs):
-        raise CannotBeChanged()
+        raise FrozenInstanceError()
 
     add = _immutable
     clear = _immutable
