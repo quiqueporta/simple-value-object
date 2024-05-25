@@ -1,6 +1,10 @@
 # Changelog
 
-## 3.1.1 (2024-05-10)
+## 3.2.0 (2024-05-25)
+
+- Fix custom exceptions to allow to pass them as no kwargs
+
+## 3.1.1 (2024-05-24)
 
 - Add customs exceptions for invariants
 

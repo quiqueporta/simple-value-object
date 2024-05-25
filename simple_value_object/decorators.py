@@ -3,6 +3,11 @@ from .exceptions import InvariantMustReturnBool, InvariantViolation
 
 
 def invariant(func=None, *, exception_type=None):
+    # Check if func is actually the exception type (when called as @invariant(MyException))
+    if isinstance(func, type) and issubclass(func, Exception):
+        exception_type = func
+        func = None
+
     # Decorator called with parentheses and arguments
     if func is None:
         return lambda f: invariant(f, exception_type=exception_type)

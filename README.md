@@ -1,6 +1,6 @@
 # Value Object
 
-![Version number](https://img.shields.io/badge/version-3.1.1-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
+![Version number](https://img.shields.io/badge/version-3.2.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
 
 Based on Ruby Gem by [NoFlopSquad](https://github.com/noflopsquad/value-object)
 
@@ -159,6 +159,10 @@ class Point(ValueObject):
     @invariant(exception_type=MyException)
     def inside_first_quadrant(self):
         return self.x > 0 and self.y > 0, "You must be inside the first quadrant"
+
+    @invariant(MyException)
+    def x_lower_than_y(self):
+        return self.x < self.y, "X must be lower than Y"
 
 Point(-5, 3)
 #MyException: "You must be inside the first quadrant"

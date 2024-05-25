@@ -269,7 +269,7 @@ with description("Value Object"):
 
             expect(lambda: Foo("buzz")).to(raise_error(MyCustomException))
 
-        with it("can return a custome message for the exception"):
+        with it("can return a custom message for the exception"):
 
             class MyCustomException(Exception):
                 pass
@@ -278,6 +278,24 @@ with description("Value Object"):
                 any: str
 
                 @invariant(exception_type=MyCustomException)
+                def bar(self):
+                    return self.any == "foo", "This is a custom message"
+
+            expect(lambda: Foo("buzz")).to(
+                raise_error(MyCustomException, "This is a custom message")
+            )
+
+        with it(
+            "can return a custom message for the exception when passed as no kwargs"
+        ):
+
+            class MyCustomException(Exception):
+                pass
+
+            class Foo(ValueObject):
+                any: str
+
+                @invariant(MyCustomException)
                 def bar(self):
                     return self.any == "foo", "This is a custom message"
 
