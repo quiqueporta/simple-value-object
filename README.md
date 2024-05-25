@@ -1,6 +1,6 @@
 # Value Object
 
-![Version number](https://img.shields.io/badge/version-3.2.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
+![Version number](https://img.shields.io/badge/version-3.3.0-blue.svg) ![License MIT](https://img.shields.io/github/license/quiqueporta/simple-value-object) ![Python Version](https://img.shields.io/badge/python-3.7,_3.8,_3.9,_3.10,3.11,3.12-blue.svg)
 
 Based on Ruby Gem by [NoFlopSquad](https://github.com/noflopsquad/value-object)
 
