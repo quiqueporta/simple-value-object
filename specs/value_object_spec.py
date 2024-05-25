@@ -138,6 +138,31 @@ with description("Value Object"):
                 equal("Money(amount=Decimal('100'), currency=Currency(symbol='€'))")
             )
 
+    with context("inheritance"):
+
+        with it("can inherit from another value object"):
+
+            class MyPointException(Exception):
+                pass
+
+            class Point(ValueObject):
+                x: int
+                y: int
+
+                @invariant
+                def x_not_negative(self):
+                    return self.x >= 0
+
+            class MyPoint(Point):
+
+                @invariant(MyPointException)
+                def y_not_negative(self):
+                    return self.y >= 0, "Y must be positive"
+
+            expect(lambda: MyPoint(6, -1)).to(
+                raise_error(MyPointException, "Y must be positive")
+            )
+
     with context("restrictions"):
 
         with context("with mutable data types"):
